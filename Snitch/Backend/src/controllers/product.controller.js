@@ -294,21 +294,24 @@ export async function getProducts (req,res) {
         isPublished: true
     })
 
-    const totalPages =  Math.ceil(totalProducts / 20)
+
+    const totalPages =  Math.ceil(totalProducts / 10)
 
     const page = req.query.page ? Math.min((req.query.page),totalPages) : 1
- const skip = (page - 1) * 20
+ const skip = (page - 1) * 10
 
- const products = await productModel.countDocuments({
-    isPublished:ture
- }).skip(skip).limit(20)
+ const products = await productModel.find({
+    isPublished:true
+ }).skip(skip).limit(10)
  
-  res.status(200).josn({
+  res.status(200).json({
     message:"producted fetched successfully",
     data:{
-        products:products,
+        totalProducts:totalProducts,
         totalPages:totalPages,
-        currentPage:page
+        currentPage:page,
+        products:products,
+
 
     }
   })

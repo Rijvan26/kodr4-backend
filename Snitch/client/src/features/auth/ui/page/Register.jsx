@@ -2,7 +2,8 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 
 const Register = () => {
-    const {register:registerUserAccount} = useAuth()
+  const { register: registerUserAccount } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -10,39 +11,42 @@ const Register = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    const success = await registerUserAccount(data)
+    const success = await registerUserAccount(data);
 
-    if(success) {
-      console.log("hello reg")
-        return 
+    if (success) {
+      console.log("hello reg");
+      return;
     }
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f5f1eb] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white">
+        {/* Brand */}
+        <div className="text-center mb-10">
+          <p className="text-xs tracking-[0.3em] text-[#8a8178] uppercase">
+            Snitch
+          </p>
+
+          <h1 className="mt-4 text-3xl sm:text-4xl font-serif font-medium text-[#1c1a18]">
             Create an account
           </h1>
 
-          <p className="mt-2 text-sm text-zinc-400">
-            Create your account to get started
+          <p className="mt-3 text-sm text-[#756e67]">
+            Join us and discover your next look.
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-
+        <div className="bg-white border border-[#e5dfd7] p-6 sm:p-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Name */}
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-zinc-200 mb-2"
+                className="mb-2 block text-xs font-medium tracking-wide text-[#3f3a35]"
               >
-                Name
+                NAME
               </label>
 
               <input
@@ -56,16 +60,16 @@ const Register = () => {
                     message: "Name must be at least 3 characters",
                   },
                 })}
-                className={`w-full rounded-lg bg-zinc-950 border px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 transition
+                className={`w-full border bg-[#faf9f7] px-4 py-3 text-sm text-[#1c1a18] outline-none transition placeholder:text-[#aaa29a]
                   ${
                     errors.name
-                      ? "border-red-500 focus:ring-1 focus:ring-red-500"
-                      : "border-zinc-800 focus:border-white"
+                      ? "border-red-400 focus:ring-1 focus:ring-red-400"
+                      : "border-[#ddd6ce] focus:border-[#1c1a18]"
                   }`}
               />
 
               {errors.name && (
-                <p className="mt-1.5 text-xs text-red-400">
+                <p className="mt-1.5 text-xs text-red-500">
                   {errors.name.message}
                 </p>
               )}
@@ -75,9 +79,9 @@ const Register = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-zinc-200 mb-2"
+                className="mb-2 block text-xs font-medium tracking-wide text-[#3f3a35]"
               >
-                Email
+                EMAIL
               </label>
 
               <input
@@ -91,16 +95,16 @@ const Register = () => {
                     message: "Enter a valid email address",
                   },
                 })}
-                className={`w-full rounded-lg bg-zinc-950 border px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 transition
+                className={`w-full border bg-[#faf9f7] px-4 py-3 text-sm text-[#1c1a18] outline-none transition placeholder:text-[#aaa29a]
                   ${
                     errors.email
-                      ? "border-red-500 focus:ring-1 focus:ring-red-500"
-                      : "border-zinc-800 focus:border-white"
+                      ? "border-red-400 focus:ring-1 focus:ring-red-400"
+                      : "border-[#ddd6ce] focus:border-[#1c1a18]"
                   }`}
               />
 
               {errors.email && (
-                <p className="mt-1.5 text-xs text-red-400">
+                <p className="mt-1.5 text-xs text-red-500">
                   {errors.email.message}
                 </p>
               )}
@@ -110,15 +114,15 @@ const Register = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-zinc-200 mb-2"
+                className="mb-2 block text-xs font-medium tracking-wide text-[#3f3a35]"
               >
-                Password
+                PASSWORD
               </label>
 
               <input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Create a password"
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
@@ -126,16 +130,16 @@ const Register = () => {
                     message: "Password must be at least 6 characters",
                   },
                 })}
-                className={`w-full rounded-lg bg-zinc-950 border px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 transition
+                className={`w-full border bg-[#faf9f7] px-4 py-3 text-sm text-[#1c1a18] outline-none transition placeholder:text-[#aaa29a]
                   ${
                     errors.password
-                      ? "border-red-500 focus:ring-1 focus:ring-red-500"
-                      : "border-zinc-800 focus:border-white"
+                      ? "border-red-400 focus:ring-1 focus:ring-red-400"
+                      : "border-[#ddd6ce] focus:border-[#1c1a18]"
                   }`}
               />
 
               {errors.password && (
-                <p className="mt-1.5 text-xs text-red-400">
+                <p className="mt-1.5 text-xs text-red-500">
                   {errors.password.message}
                 </p>
               )}
@@ -144,23 +148,27 @@ const Register = () => {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full rounded-lg bg-white py-3 text-sm font-semibold text-black transition hover:bg-zinc-200 active:scale-[0.98]"
+              className="w-full bg-[#1c1a18] py-3.5 text-sm font-medium tracking-wide text-white transition hover:bg-[#302c28] active:scale-[0.99]"
             >
-              Create account
+              CREATE ACCOUNT
             </button>
           </form>
 
           {/* Login */}
-          <p className="text-center text-sm text-zinc-500 mt-6">
+          <p className="mt-7 text-center text-sm text-[#756e67]">
             Already have an account?{" "}
             <a
               href="/login"
-              className="font-medium text-white hover:underline"
+              className="font-medium text-[#1c1a18] underline underline-offset-4 hover:text-[#756e67]"
             >
               Login
             </a>
           </p>
         </div>
+
+        <p className="mt-6 text-center text-[11px] tracking-wide text-[#9b938b]">
+          PREMIUM MENSWEAR • EVERYDAY ESSENTIALS
+        </p>
       </div>
     </div>
   );

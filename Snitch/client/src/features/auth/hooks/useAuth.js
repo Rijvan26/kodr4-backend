@@ -9,11 +9,11 @@ const useAuth = () => {
     (state) =>   state.auth
 )
 
-useEffect(() => {
-  if(!token && !user && !isLoading) {
-    dispatch(fetchCurrentUser())
-  }
-},[token , user , dispatch,isLoading])
+// useEffect(() => {
+//   if(!token && !user && !isLoading) {
+//     dispatch(fetchCurrentUser())
+//   }
+// },[token , !user , dispatch,isLoading])
 
  const register = useCallback(
     async (userData) => {
@@ -24,7 +24,7 @@ useEffect(() => {
   )
 
   const login = useCallback(
-    async(credentials) => {
+    async (credentials) => {
       const resultAction = await dispatch(loginUser(credentials))
       return loginUser.fulfilled.match(resultAction)
     },
