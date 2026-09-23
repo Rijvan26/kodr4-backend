@@ -31,7 +31,7 @@ export async function register(req,res) {
         user:{
             username:user.username,
             email:user.email
-        }
+        },
     })
 }
 
@@ -57,11 +57,11 @@ export async function login(req, res) {
         })
     }
 
-    const tokens = generateTokens(user._id)
+    const tokens = generateToken(user._id)
 
     await sessionModel.findOneAndUpdate(
-        { userId: user._id },
-        { refreshTokenHash: await bcrypt.hash(tokens.refreshToken, 12) },
+        { user: user._id },
+        { refreshTokenHash: await bcrypt.hash(tokens.refreshTokenHash, 12) },
         { upsert: true }
     )
 
@@ -75,7 +75,7 @@ export async function login(req, res) {
         data: {
             user: {
                 id: user._id,
-                name: user.name,
+                username: user.username,
                 email: user.email,
             },
             accessToken: tokens.accessToken
@@ -88,36 +88,46 @@ export async function login(req, res) {
 export async function refresh (req,res) {
     const {refreshToken} = req.cookies
 
-    try{
-        const decoded = verifyRefreshToken(refreshToken)
-
-    const{userId} = decoded
-
-    const session = await sessionModel.findOne({
-        userId:user._id
-    })
-
-    if(!session) {
-
-        await sessionModel.deleteMany({userId:user._id})
-        return res.status(401).json({
-            message:"invalid refresh token"
-        })
-    }
-
      if(!refreshToken) {
         return res.status(401).json({
             message:"refresh token not found"
         })
     }
 
-    const isRefreshTokenValid = await bcrypt.compare(refreshToken,session.refreshToken,12)
+    try{
+        const decoded = verifyToken(refreshToken)
+
+    const{userId} = decoded
+
+    const session = await sessionModel.findOne({
+        userId:userId
+    })
+
+    if(!session) {
+
+        await sessionModel.deleteMany({userId:userId})
+        return res.status(401).json({
+            message:"invalid refresh token"
+        })
+    }
+
+    
+    const isRefreshTokenValid = await bcrypt.compare(refreshToken,session.refreshTokenHash)
+
+    if(!isRefreshTokenValid){
+         await sessionModel.deleteMany({
+        user: userId
+    })
+         return res.status(401).json({
+            message:"invalid refresh token"
+        })
+    }
 
 const tokens = generateToken(userId)
 
 await sessionModel.findOneAndUpdate(
     {userId:userId},
-    {refreshToken: await bcrypt.hash(tokens.refreshToken,12)},
+    {refreshToken: await bcrypt.hash(tokens.refreshTokenHash,12)},
     {upsert:true}
 )
 
@@ -134,7 +144,9 @@ return res.status(200).json({
 })
 
     } catch(err) {
-        message:"invalid refrresh token"
+        return res.status(401).json({
+        message: "Invalid refresh token"
+    })
     }
    
 }
