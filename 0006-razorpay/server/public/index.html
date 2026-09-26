@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3f0e9" />
+    <title>Fieldnotes Supply | Checkout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root { color-scheme: light; --paper: #f3f0e9; --ink: #252b26; --muted: #73776f; --line: #d9d7cf; --green: #244b3a; --orange: #d66b41; font-family: "Manrope", sans-serif; font-synthesis: none; text-rendering: optimizeLegibility; }
+      * { box-sizing: border-box; }
+      body { min-width: 320px; min-height: 100vh; margin: 0; color: var(--ink); background: var(--paper) radial-gradient(#2637290d 0.7px, transparent 0.7px); background-size: 6px 6px; }
+      .topbar, .footer { display: flex; align-items: center; justify-content: space-between; min-height: 76px; padding: 0 7.2vw; border-bottom: 1px solid var(--line); }
+      .wordmark { display: flex; align-items: center; gap: 9px; color: var(--ink); font-size: 12px; font-weight: 800; letter-spacing: 1.1px; text-decoration: none; }
+      .mark { display: grid; width: 30px; height: 30px; place-items: center; color: white; background: var(--green); font-size: 15px; letter-spacing: 0; }
+      .wordmark-muted { color: var(--muted); font-weight: 500; }
+      .secure-label, .eyebrow, .art-caption, .footer { font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 1px; }
+      .secure-label { display: flex; align-items: center; gap: 9px; color: var(--muted); }
+      .secure-dot { width: 7px; height: 7px; border-radius: 50%; background: #6c986d; }
+      .checkout-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr); gap: clamp(50px, 8vw, 120px); width: min(1060px, 86vw); margin: 70px auto 84px; align-items: center; }
+      .product-art { position: relative; display: grid; min-height: 370px; overflow: hidden; place-items: center; background: #dce2d6; isolation: isolate; }
+      .product-art::after { position: absolute; z-index: -1; inset: 0; content: ""; background: linear-gradient(125deg, #f0eee0 0 33%, transparent 33%); opacity: 0.5; }
+      .sun { position: absolute; top: 50px; right: 20%; width: 89px; aspect-ratio: 1; border-radius: 50%; background: #e4a774; }
+      .ridge { position: absolute; right: -10%; bottom: 0; left: -10%; height: 47%; clip-path: polygon(0 54%, 17% 26%, 31% 56%, 52% 12%, 69% 55%, 83% 28%, 100% 61%, 100% 100%, 0 100%); }
+      .ridge-back { background: #91a592; transform: translateY(-21px); }
+      .ridge-front { background: #547565; clip-path: polygon(0 52%, 23% 20%, 40% 53%, 59% 23%, 77% 56%, 93% 31%, 100% 47%, 100% 100%, 0 100%); }
+      .journal { position: relative; z-index: 1; display: flex; width: 142px; height: 207px; padding: 28px 20px 19px; flex-direction: column; align-items: center; color: #e7e7d8; background: #23483a; box-shadow: 12px 14px 0 #1d3a302e, 0 18px 35px #27382e42; transform: rotate(-8deg); animation: rise-in 650ms cubic-bezier(.2,.7,.2,1) both; }
+      .journal::before { position: absolute; top: 0; bottom: 0; left: 11px; width: 1px; content: ""; background: #dce4cb44; }
+      .journal-stamp { margin-top: 18px; font-size: 15px; font-weight: 800; line-height: 1.1; letter-spacing: 2px; text-align: center; }
+      .journal-rule { width: 32px; height: 1px; margin: 18px 0 auto; background: var(--orange); }
+      .journal-edition { font-family: "DM Mono", monospace; font-size: 6px; letter-spacing: 0.5px; }
+      .art-caption { position: absolute; right: 18px; bottom: 15px; color: #f7f5e6; font-size: 8px; }
+      .product-copy { padding: 32px 3px 0; }
+      .eyebrow { margin: 0 0 15px; color: var(--orange); }
+      h1, h2, p { margin-top: 0; }
+      h1 { margin-bottom: 16px; font-size: clamp(36px, 4vw, 48px); line-height: 1.08; letter-spacing: 0; }
+      .description { max-width: 440px; margin-bottom: 24px; color: #5e625b; font-size: 14px; line-height: 1.8; }
+      .product-meta { display: flex; flex-wrap: wrap; gap: 10px 21px; color: var(--muted); font-family: "DM Mono", monospace; font-size: 10px; }
+      .product-meta span::before { margin-right: 7px; color: var(--green); content: "✓"; }
+      .summary { padding: 31px 0 0; border-top: 2px solid var(--ink); animation: rise-in 650ms 100ms cubic-bezier(.2,.7,.2,1) both; }
+      .summary-heading h2 { margin-bottom: 28px; font-size: 20px; letter-spacing: 0; }
+      .line-item { display: flex; align-items: center; gap: 14px; padding: 15px 0 21px; border-top: 1px solid var(--line); }
+      .item-thumbnail { display: grid; width: 48px; height: 59px; flex: 0 0 auto; place-items: center; color: #e7e7d8; background: var(--green); box-shadow: 3px 3px 0 #244b3a30; font-size: 16px; font-weight: 800; }
+      .item-info { display: grid; flex: 1; gap: 6px; font-size: 12px; }
+      .item-info span { color: var(--muted); font-size: 11px; }
+      .item-price { font-size: 12px; }
+      .amount-label { display: flex; justify-content: space-between; margin: 0 0 8px; font-size: 11px; font-weight: 700; }
+      .amount-entry { display: flex; height: 47px; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid #b8b9b0; background: #fffdf8; }
+      .amount-entry:focus-within { border-color: var(--green); outline: 2px solid #244b3a22; }
+      .amount-entry span { color: var(--muted); }
+      .amount-entry input { width: 100%; border: 0; outline: 0; color: var(--ink); background: transparent; font: 600 14px "Manrope", sans-serif; }
+      .amount-limits { margin: 7px 0 14px; color: var(--muted); font-size: 10px; }
+      .price-row { display: flex; justify-content: space-between; padding: 10px 0; color: #686c65; font-size: 12px; }
+      .free { color: var(--green); font-family: "DM Mono", monospace; font-size: 10px; }
+      .total { margin-top: 9px; padding: 17px 0; border-top: 1px solid var(--line); color: var(--ink); font-size: 14px; }
+      .total small { margin-left: 3px; color: var(--muted); font-family: "DM Mono", monospace; font-size: 9px; font-weight: 400; }
+      .pay-button { display: flex; width: 100%; min-height: 54px; align-items: center; justify-content: space-between; padding: 0 19px; border: 0; color: white; background: var(--green); cursor: pointer; font: 700 12px "Manrope", sans-serif; transition: background 160ms ease, transform 160ms ease; }
+      .pay-button:hover { background: #193b2d; transform: translateY(-1px); }
+      .pay-button:disabled { cursor: wait; opacity: 0.7; transform: none; }
+      .pay-button:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+      .payment-note { display: flex; align-items: center; gap: 7px; margin: 14px 0 20px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+      .payment-note span { color: var(--green); font-size: 15px; }
+      .status { min-height: 0; margin: 0; color: var(--green); font-size: 12px; line-height: 1.5; }
+      .status:not(:empty) { margin-bottom: 16px; }
+      .status[data-error="true"] { color: #ad472f; }
+      .payment-brands { display: flex; gap: 17px; padding-top: 13px; border-top: 1px solid var(--line); color: #777b74; font-family: "DM Mono", monospace; font-size: 9px; }
+      .footer { min-height: 66px; border-top: 1px solid var(--line); border-bottom: 0; color: var(--muted); font-size: 9px; }
+      .footer a { color: var(--ink); text-decoration-color: var(--orange); text-underline-offset: 3px; }
+      @keyframes rise-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+      @media (max-width: 760px) { .topbar, .footer { min-height: 64px; padding: 0 6vw; } .checkout-layout { grid-template-columns: 1fr; gap: 30px; width: 88vw; margin: 31px auto 52px; } .product-art { min-height: 270px; } .sun { top: 35px; width: 70px; } .journal { transform: scale(.82) rotate(-8deg); } .product-copy { padding-top: 25px; } h1 { font-size: 38px; } .summary { padding-top: 25px; } .footer { align-items: flex-start; justify-content: center; gap: 7px; flex-direction: column; padding-top: 13px; padding-bottom: 13px; } }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; } }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="wordmark" href="/" aria-label="Fieldnotes Supply home"><span class="mark">F.</span> FIELDNOTES <span class="wordmark-muted">SUPPLY</span></a>
+      <span class="secure-label"><span class="secure-dot"></span> SECURE CHECKOUT</span>
+    </header>
+
+    <main class="checkout-layout">
+      <section class="product" aria-labelledby="product-title">
+        <div class="product-art" role="img" aria-label="Illustration of an evergreen field journal">
+          <div class="sun"></div>
+          <div class="ridge ridge-back"></div>
+          <div class="ridge ridge-front"></div>
+          <div class="journal">
+            <span class="journal-stamp">FIELD<br />NOTES</span>
+            <span class="journal-rule"></span>
+            <span class="journal-edition">VOL. 01 &nbsp; / &nbsp; 2026</span>
+          </div>
+          <span class="art-caption">MADE FOR THE MILES BETWEEN</span>
+        </div>
+        <div class="product-copy">
+          <p class="eyebrow">THE EVERYDAY FIELD JOURNAL</p>
+          <h1 id="product-title">A place for<br />what you notice.</h1>
+          <p class="description">An enduring, lay-flat notebook for trail maps, small observations, and plans that start outdoors.</p>
+          <div class="product-meta"><span>192 pages · recycled paper</span><span>Ships free in India</span></div>
+        </div>
+      </section>
+
+      <section class="summary" aria-labelledby="summary-title">
+        <div class="summary-heading">
+          <p class="eyebrow">YOUR ORDER</p>
+          <h2 id="summary-title">Set your amount.</h2>
+        </div>
+        <div class="line-item">
+          <div class="item-thumbnail" aria-hidden="true"><span>F.</span></div>
+          <div class="item-info"><strong>Field Journal No. 01</strong><span>Evergreen · One size</span></div>
+          <strong class="item-price" id="item-price">₹1,499.00</strong>
+        </div>
+        <label class="amount-label" for="payment-amount"><span>Amount</span><span>INR</span></label>
+        <div class="amount-entry"><span aria-hidden="true">₹</span><input id="payment-amount" type="number" min="1" max="1000000" step="0.01" value="1499" inputmode="decimal" required /></div>
+        <p class="amount-limits">Minimum ₹1.00 · Maximum ₹10,00,000.00</p>
+        <div class="price-row"><span>Subtotal</span><span id="subtotal">₹1,499.00</span></div>
+        <div class="price-row"><span>Shipping</span><span class="free">FREE</span></div>
+        <div class="price-row total"><strong>Total due</strong><strong><span id="total">₹1,499.00</span> <small>INR</small></strong></div>
+        <button class="pay-button" id="pay-button" type="button"><span>Continue to payment</span><span aria-hidden="true">↗</span></button>
+        <p class="payment-note"><span aria-hidden="true">◈</span> Payments encrypted and processed securely by Razorpay.</p>
+        <p class="status" id="payment-status" role="status" aria-live="polite"></p>
+        <div class="payment-brands" aria-label="Payment methods available through Razorpay"><span>UPI</span><span>VISA</span><span>RuPay</span><span>Netbanking</span></div>
+      </section>
+    </main>
+
+    <footer class="footer"><span>FIELDNOTES SUPPLY · MADE TO BE USED</span><span>Questions? <a href="mailto:hello@fieldnotessupply.example">Get in touch</a></span></footer>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      const payButton = document.querySelector("#pay-button");
+      const amountInput = document.querySelector("#payment-amount");
+      const statusMessage = document.querySelector("#payment-status");
+      const priceTargets = ["#item-price", "#subtotal", "#total"].map((selector) => document.querySelector(selector));
+      const inr = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" });
+
+      function setStatus(message, isError = false) {
+        statusMessage.textContent = message;
+        statusMessage.dataset.error = String(isError);
+      }
+
+      function amountInPaise() {
+        return Math.round(Number(amountInput.value) * 100);
+      }
+
+      function updatePrice() {
+        if (!amountInput.validity.valid || !Number.isFinite(Number(amountInput.value))) return;
+        const formattedPrice = inr.format(amountInPaise() / 100);
+        priceTargets.forEach((target) => { target.textContent = formattedPrice; });
+      }
+
+      amountInput.addEventListener("input", updatePrice);
+
+      payButton.addEventListener("click", async () => {
+        if (!amountInput.reportValidity()) return;
+        if (!window.Razorpay) {
+          setStatus("Razorpay Checkout could not be loaded. Check your connection and retry.", true);
+          return;
+        }
+
+        payButton.disabled = true;
+        setStatus("Preparing secure checkout...");
+
+        try {
+          const orderResponse = await fetch("/api/v1/payments/create-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount: amountInPaise() }),
+          });
+          const orderResult = await orderResponse.json();
+          if (!orderResponse.ok || !orderResult.success) {
+            throw new Error(orderResult.message || "Could not create the payment order.");
+          }
+
+          const { order, key } = orderResult.data;
+          const checkout = new window.Razorpay({
+            key,
+            amount: order.amount,
+            currency: order.currency,
+            name: "Fieldnotes Supply",
+            description: "Field Journal No. 01",
+            order_id: order.id,
+            theme: { color: "#244b3a" },
+            handler: async (payment) => {
+              setStatus("Payment received. Verifying...");
+              try {
+                const verifyResponse = await fetch("/api/v1/payments/verify", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(payment),
+                });
+                const verifyResult = await verifyResponse.json();
+                if (!verifyResponse.ok || !verifyResult.success) {
+                  throw new Error(verifyResult.message || "Payment verification failed.");
+                }
+
+                setStatus(`Payment verified. Reference: ${verifyResult.data.paymentId}`);
+                payButton.querySelector("span:first-child").textContent = "Payment complete";
+              } catch (error) {
+                setStatus(error.message || "We could not verify this payment. Contact support with your payment ID.", true);
+                payButton.disabled = false;
+              }
+            },
+            modal: {
+              ondismiss: () => {
+                setStatus("Checkout closed. Your order has not been charged.");
+                payButton.disabled = false;
+              },
+            },
+          });
+
+          checkout.on("payment.failed", (event) => {
+            setStatus(event.error?.description || "Payment did not go through. Please try another method.", true);
+            payButton.disabled = false;
+          });
+          checkout.open();
+          setStatus("");
+        } catch (error) {
+          setStatus(error.message || "Could not start checkout. Please retry.", true);
+          payButton.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
