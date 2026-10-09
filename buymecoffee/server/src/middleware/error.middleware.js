@@ -36,7 +36,7 @@ export function errorHandler(err, _req, res, _next) {
         message = "Malformed JSON body";
     }
     else {
-        console.error(err);
+        console.error("Unhandled request error:", err instanceof Error ? err.name : "UnknownError");
     }
     const body = { success: false, message, errors };
     // Add stack trace only in development

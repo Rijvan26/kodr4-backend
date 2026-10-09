@@ -1,8 +1,11 @@
 import mongoose, { Document, Types } from "mongoose";
 
 export interface IPayment extends Document {
-    sender: Types.ObjectId;
+    sender?: Types.ObjectId;
     creator: Types.ObjectId;
+    supporterName?: string;
+    supporterEmail?: string;
+    coffeeQuantity?: number;
 
     amount: number;
     currency: string;
@@ -21,13 +24,27 @@ const paymentSchema = new mongoose.Schema<IPayment>(
         sender: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true,
+        },
+        supporterName: {
+            type: String,
+            trim: true,
+        },
+        supporterEmail: {
+            type: String,
+            trim: true,
+            lowercase: true,
         },
 
         creator: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true,
+        },
+
+        coffeeQuantity: {
+            type: Number,
+            min: 1,
+            max: 5,
         },
 
         amount: {

@@ -1,7 +1,8 @@
 import app from "./app.js";
 import { connectDb } from "./config/db.js";
+const port = Number(process.env.PORT ?? "3000");
 await connectDb();
-app.listen(3000, () => {
-    console.log("server is running on port 3000");
+app.listen(port, () => {
+    console.info(`Server is listening on port ${port}`);
 });
 //# sourceMappingURL=server.js.map

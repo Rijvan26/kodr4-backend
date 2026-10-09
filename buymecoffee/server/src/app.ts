@@ -11,9 +11,14 @@ import webhookRouter from "./routes/webhook.route.js";
 import cors from "cors"
 const app: Application = express();
 
+const allowedOrigins = [
+    "https://setup-anymore-washhouse.ngrok-free.dev",
+    "http://localhost:5173",
+]
+
 app.use(cors({
-    origin: "http://127.0.0.1:3001",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
 }));

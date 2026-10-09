@@ -1,9 +1,10 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
 
     // Environment Settings
     "module": "nodenext",
@@ -32,5 +33,5 @@
   },
   
   // 2. ADD THIS (Outside compilerOptions!): Tell TS which files to compile
-  "include": ["src/**/*", "types/**/*"]
+  "include": ["src/**/*"]
 }

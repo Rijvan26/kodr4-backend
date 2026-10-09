@@ -47,14 +47,13 @@ function setRefreshCookie(res, token) {
  * POST /auth/register — creates a user and issues tokens.
  */
 export const register = asyncHandler(async (req, res) => {
-    const { name, username, email, password, coffeePrice, bio } = req.body;
+    const { name, username, email, password, bio } = req.body;
     const user = await createUser({
         name,
         username,
         email,
         password,
-        coffeePrice: coffeePrice * 100,
-        bio
+        bio,
     });
     const { accessToken, refreshToken } = await issueTokens(user);
     setRefreshCookie(res, refreshToken);

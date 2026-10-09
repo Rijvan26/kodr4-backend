@@ -11,6 +11,7 @@ import { sendSuccess } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../utils/jwt.js";
 import type { User, PublicUser, TokenPair } from "../types/user.js";
+import { getValidCoffeePrice } from "../config/constants.js";
 
 const REFRESH_COOKIE = "refreshToken";
 const COOKIE_PATH = "/api/v1/auth";
@@ -32,6 +33,7 @@ function toPublicUser(user: User): PublicUser {
         name: user.name,
         username: user.username,
         email: user.email,
+        coffeePrice: getValidCoffeePrice(user.coffeePrice),
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
     };
@@ -61,15 +63,15 @@ function setRefreshCookie(res: Response, token: string): void {
  * POST /auth/register — creates a user and issues tokens.
  */
 export const register = asyncHandler(async (req: Request, res: Response) => {
-    const { name, username, email, password, coffeePrice, bio } = req.body;
+    const { name, username, email, password, bio, coffeePrice } = req.body;
     
     const user = await createUser({ 
         name, 
         username, 
         email, 
         password, 
-        coffeePrice:  coffeePrice * 100 , 
-        bio 
+        bio,
+        coffeePrice,
     });
     
     const { accessToken, refreshToken } = await issueTokens(user);
@@ -109,7 +111,13 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
     const token = req.cookies?.[REFRESH_COOKIE];
     if (!token) throw new appError( "Refresh token missing",401);
 
-    const payload = verifyRefreshToken(token) as { id: string; email: string };
+    let payload: { id: string; email: string };
+    try {
+        payload = verifyRefreshToken(token);
+    } catch {
+        res.clearCookie(REFRESH_COOKIE, refreshCookieOptions);
+        throw new appError("Invalid refresh token", 401);
+    }
 
     const user = await findUserById(payload.id);
     const session = await getSessionByToken(token);
@@ -131,12 +139,7 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
 export const logout = asyncHandler(async (req: Request, res: Response) => {
     const token = req.cookies?.[REFRESH_COOKIE];
     if (token) {
-        try {
-            verifyRefreshToken(token);
-            await clearRefreshToken(token);
-        } catch {
-            // Invalid/expired cookie: nothing to revoke, still clear it.
-        }
+        await clearRefreshToken(token);
     }
 
     res.clearCookie(REFRESH_COOKIE, refreshCookieOptions);

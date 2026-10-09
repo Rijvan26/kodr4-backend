@@ -9,8 +9,6 @@ export interface TokenPayload {
 }
 
 export function signAccessToken(payload: TokenPayload): string {
-    console.log("SIGN ACCESS SECRET:", configEnv.ACCESS_TOKEN_SECRET);
-
     return jwt.sign(
         { id: payload.id, email: payload.email },
         configEnv.ACCESS_TOKEN_SECRET,
@@ -19,8 +17,6 @@ export function signAccessToken(payload: TokenPayload): string {
 }
 
 export function verifyAccessToken(token: string): TokenPayload {
-    console.log("VERIFY ACCESS SECRET:", configEnv.ACCESS_TOKEN_SECRET);
-
     return jwt.verify(
         token,
         configEnv.ACCESS_TOKEN_SECRET

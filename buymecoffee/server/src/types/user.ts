@@ -6,6 +6,7 @@ export interface User {
     username: string;
     email: string;
     password?: string;
+    coffeePrice: number;
     refreshToken?: string | null;
     createdAt: Date;
     updatedAt: Date;
@@ -17,9 +18,8 @@ export interface RegisterInput {
     username: string;
     email: string;
     password: string;
-    coffeePrice:number,
-    bio:string
-
+    bio?: string;
+    coffeePrice: number;
 }
 
 export interface LoginInput {
@@ -32,6 +32,7 @@ export interface PublicUser {
     name: string;
     username: string;
     email: string;
+    coffeePrice: number;
     createdAt: Date;
     updatedAt: Date;
 }

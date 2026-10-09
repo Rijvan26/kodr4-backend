@@ -15,7 +15,6 @@ export interface RegisterInput {
     username: string;
     email: string;
     password: string;
-    coffeePrice: number;
     bio: string;
 }
 export interface LoginInput {

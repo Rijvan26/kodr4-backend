@@ -3,18 +3,25 @@ import mongoose, { Schema } from "mongoose";
 import {  Document } from "mongoose";
 
 
+import {
+    DEFAULT_COFFEE_PRICE,
+    MAX_COFFEE_PRICE,
+    MIN_COFFEE_PRICE,
+    getValidCoffeePrice,
+} from "../config/constants.js";
+
 export interface IUserMethods {
     comparePassword(candidate: string): Promise<boolean>;
 }
 
 export interface Iuser extends Document, IUserMethods {
-   username:string
-   name:string
-   bio:string
-   coffeePrice:number
-   email:string,
-   password:string
-   avatarUrl:string
+   username: string;
+   name: string;
+   bio: string;
+   email: string;
+   password: string;
+   avatarUrl: string;
+   coffeePrice: number;
    createdAt: Date; 
    updatedAt: Date; 
 }
@@ -52,13 +59,16 @@ const userSchema = new Schema<Iuser>(
         },
         coffeePrice: {
             type: Number,
-            min: 2000,
-            max: 50000,
-            default: 5000,
+            required: true,
+            min: MIN_COFFEE_PRICE,
+            max: MAX_COFFEE_PRICE,
+            default: DEFAULT_COFFEE_PRICE,
+            get: (val: number) => getValidCoffeePrice(val),
+            set: (val: number) => getValidCoffeePrice(val),
         },
         password: { type: String, required: true, minlength: 8, select: false }
     },
-    { timestamps: true },
+    { timestamps: true, toJSON: { getters: true }, toObject: { getters: true } },
 );
 
 userSchema.pre("save", async function hashPassword() {

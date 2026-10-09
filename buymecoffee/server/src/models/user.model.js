@@ -29,12 +29,6 @@ const userSchema = new Schema({
         type: String,
         default: "https://ik.imagekit.io/hnoglyswo0/user-avatar.webp"
     },
-    coffeePrice: {
-        type: Number,
-        min: 2000,
-        max: 50000,
-        default: 5000,
-    },
     password: { type: String, required: true, minlength: 8, select: false }
 }, { timestamps: true });
 userSchema.pre("save", async function hashPassword() {

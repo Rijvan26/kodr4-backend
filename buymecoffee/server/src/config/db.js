@@ -4,6 +4,6 @@ import dns from "node:dns";
 dns.setServers(['1.1.1.1', '8.8.8.8']);
 export const connectDb = async () => {
     await mongoose.connect(configEnv.MONGO_URI);
-    console.log("connect to daabase ");
+    console.info("Database connected");
 };
 //# sourceMappingURL=db.js.map

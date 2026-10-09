@@ -16,9 +16,15 @@ export async function getSessionByToken(token) {
  * @param refreshToken The raw refresh token
  */
 export async function updateRefreshToken(id, refreshToken) {
-    return SessionModel.findOneAndUpdate({ userId: id }, { tokenHash: refreshToken }, {
+    const tokenHash = crypto
+        .createHash("sha512")
+        .update(refreshToken)
+        .digest("hex");
+    return SessionModel.findOneAndUpdate({ userId: id }, {
+        tokenHash,
+    }, {
         upsert: true,
-        new: true // Returns the newly created/updated document instead of the old one
+        new: true,
     });
 }
 /**
