@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Razorpay Test Payment</title>
+</head>
+
+<body>
+
+    <h1>Buy Me a Coffee</h1>
+
+    <button id="pay-btn">Pay ₹500</button>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        const payButton = document.getElementById("pay-btn");
+
+        payButton.onclick = async () => {
+
+            try {
+                // =========================
+                // 1. CREATE ORDER
+                // =========================
+
+                const response = await fetch(
+                    "http://localhost:3000/api/payment/create-order",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json",
+
+                            // Use a fresh access token here
+                            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYmRkZGExZWQ0NzI0M2ZhODc4NzRkMiIsImVtYWlsIjoia2hhbnJpanZhbjI2MTAwQGdtYWlsLmNvbSIsImlhdCI6MTc5MDg4MjcwOSwiZXhwIjoxNzkwODgzNjA5fQ._E8Lb9ZK6BPr2jX0RlDi_oqmFx7mJ8URIbzEpBDkq0c"
+                        },
+
+                        body: JSON.stringify({
+                            // Creator's MongoDB ObjectId
+                            creatorId: "6abddda1ed47243fa87874d2",
+
+                            // Amount in rupees
+                            amount: 500
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                console.log("Create order response:", data);
+
+                if (!response.ok) {
+                    alert(data.message || "Failed to create order");
+                    return;
+                }
+
+                // =========================
+                // 2. OPEN RAZORPAY CHECKOUT
+                // =========================
+
+                const options = {
+
+                    // Razorpay TEST key ID
+                    key: "rzp_test_TgCcY8Wb4r58Yw",
+
+                    amount: data.order.amount,
+
+                    currency: data.order.currency,
+
+                    name: "Buy Me a Coffee",
+
+                    description: "Support the creator",
+
+                    order_id: data.order.id,
+
+                    handler: async function (paymentResponse) {
+
+                        console.log(
+                            "Razorpay payment response:",
+                            paymentResponse
+                        );
+
+                        // =========================
+                        // 3. VERIFY PAYMENT
+                        // =========================
+
+                        try {
+
+                            const verifyResponse = await fetch(
+                                "http://localhost:3000/api/payment/verify-payment",
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type": "application/json",
+
+                                        "Authorization":
+                                            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYmRkZGExZWQ0NzI0M2ZhODc4NzRkMiIsImVtYWlsIjoia2hhbnJpanZhbjI2MTAwQGdtYWlsLmNvbSIsImlhdCI6MTc5MDg4MjcwOSwiZXhwIjoxNzkwODgzNjA5fQ._E8Lb9ZK6BPr2jX0RlDi_oqmFx7mJ8URIbzEpBDkq0c"
+                                    },
+
+                                    body: JSON.stringify({
+
+                                        razorpay_order_id:
+                                            paymentResponse.razorpay_order_id,
+
+                                        razorpay_payment_id:
+                                            paymentResponse.razorpay_payment_id,
+
+                                        razorpay_signature:
+                                            paymentResponse.razorpay_signature
+                                    })
+                                }
+                            );
+
+                            const verifyResult =
+                                await verifyResponse.json();
+
+                            console.log(
+                                "Verification result:",
+                                verifyResult
+                            );
+
+                            if (verifyResponse.ok) {
+
+                                alert(
+                                    "Payment successful and signature verified!"
+                                );
+
+                            } else {
+
+                                alert(
+                                    verifyResult.message ||
+                                    "Payment verification failed"
+                                );
+                            }
+
+                        } catch (error) {
+
+                            console.error(
+                                "Verification error:",
+                                error
+                            );
+
+                            alert(
+                                "Something went wrong while verifying payment"
+                            );
+                        }
+                    },
+
+                    // =========================
+                    // 4. CHECKOUT OPTIONS
+                    // =========================
+
+                    prefill: {
+                        name: "Test User",
+                        email: "test@example.com"
+                    },
+
+                    theme: {
+                        color: "#3399cc"
+                    },
+
+                    modal: {
+                        ondismiss: function () {
+                            console.log(
+                                "Razorpay checkout closed"
+                            );
+                        }
+                    }
+                };
+
+                // Create Razorpay instance
+                const razorpay = new Razorpay(options);
+
+                // Handle checkout errors
+                razorpay.on(
+                    "payment.failed",
+                    function (response) {
+
+                        console.error(
+                            "Payment failed:",
+                            response.error
+                        );
+
+                        alert(
+                            "Payment failed: " +
+                            response.error.description
+                        );
+                    }
+                );
+
+                // Open Razorpay
+                razorpay.open();
+
+            } catch (error) {
+
+                console.error(
+                    "Create order error:",
+                    error
+                );
+
+                alert(
+                    "Something went wrong while creating the order"
+                );
+            }
+        };
+    </script>
+
+</body>
+</html>

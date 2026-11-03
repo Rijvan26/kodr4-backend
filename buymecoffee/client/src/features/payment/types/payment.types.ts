@@ -50,3 +50,15 @@ export interface PaymentStatusResponse {
   success: boolean;
   data: PaymentStatusData;
 }
+
+export interface VerifyPaymentRequest {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+export interface VerifyPaymentResponse {
+  success: boolean;
+  message: string;
+  data: PaymentStatusData;
+}

@@ -3,6 +3,9 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../features/auth/hook/auth.hook";
 import { getAuthFormErrorDetails } from "../features/auth/utils/authFormErrors";
+import Input from "../shared/ui/Input";
+import Textarea from "../shared/ui/Textarea";
+import Button from "../shared/ui/Button";
 
 interface RegisterFormValues {
   name: string;
@@ -77,27 +80,29 @@ const RegisterPage = () => {
 
   return (
     <section aria-labelledby="register-heading">
-      <p className="text-[11px] font-semibold tracking-[0.18em] text-[#537264]">START WITH THE BASICS</p>
-      <h2 id="register-heading" className="mt-3 font-serif text-[36px] leading-tight text-[#1b2924]">
-        Create your account.
+      <p className="text-caption tracking-kicker text-primary font-semibold">
+        SUPPORTME.COM CREATOR REGISTRATION
+      </p>
+      <h2 id="register-heading" className="mt-3 font-display text-heading text-foreground">
+        Create your creator page.
       </h2>
-      <p className="mt-2 text-sm leading-6 text-[#69746e]">
-        Set up your creator profile to get started.
+      <p className="mt-2 text-body-relaxed text-muted">
+        Your page will be live at <code className="font-mono text-primary font-semibold">supportme.com/@your_handle</code>
       </p>
 
-      <form className="mt-6 space-y-4" noValidate onSubmit={handleSubmit(handleRegister)}>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <form className="mt-6 space-y-5" noValidate onSubmit={handleSubmit(handleRegister)}>
+        {/* Name & Username row */}
+        <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="register-name" className="mb-1.5 block text-sm font-medium text-[#26352e]">
+            <label htmlFor="register-name" className="mb-field-label block text-label text-surface-foreground">
               Name
             </label>
-            <input
+            <Input
               id="register-name"
               type="text"
               autoComplete="name"
               aria-invalid={Boolean(errors.name)}
               aria-describedby={errors.name ? "register-name-error" : undefined}
-              className="w-full rounded-md border border-[#d5dbd5] bg-white px-3.5 py-2.5 text-sm text-[#1b2924] outline-none transition placeholder:text-[#9aa39d] focus:border-[#32634f] focus:ring-2 focus:ring-[#32634f]/15 aria-invalid:border-[#b34b43]"
               placeholder="Your name"
               {...registerField("name", {
                 required: "Enter your name.",
@@ -108,14 +113,18 @@ const RegisterPage = () => {
                 onChange: () => setRequestError(null),
               })}
             />
-            {errors.name && <p id="register-name-error" className="mt-1 text-xs text-[#a63f38]" role="alert">{errors.name.message}</p>}
+            {errors.name && (
+              <p id="register-name-error" className="mt-1.5 text-body-small text-danger" role="alert">
+                {errors.name.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <label htmlFor="register-username" className="mb-1.5 block text-sm font-medium text-[#26352e]">
+            <label htmlFor="register-username" className="mb-field-label block text-label text-surface-foreground">
               Username
             </label>
-            <input
+            <Input
               id="register-username"
               type="text"
               autoComplete="username"
@@ -123,7 +132,6 @@ const RegisterPage = () => {
               autoCorrect="off"
               aria-invalid={Boolean(errors.username)}
               aria-describedby={errors.username ? "register-username-error" : undefined}
-              className="w-full rounded-md border border-[#d5dbd5] bg-white px-3.5 py-2.5 text-sm text-[#1b2924] outline-none transition placeholder:text-[#9aa39d] focus:border-[#32634f] focus:ring-2 focus:ring-[#32634f]/15 aria-invalid:border-[#b34b43]"
               placeholder="your_handle"
               {...registerField("username", {
                 required: "Choose a username.",
@@ -137,15 +145,20 @@ const RegisterPage = () => {
                 onChange: () => setRequestError(null),
               })}
             />
-            {errors.username && <p id="register-username-error" className="mt-1 text-xs text-[#a63f38]" role="alert">{errors.username.message}</p>}
+            {errors.username && (
+              <p id="register-username-error" className="mt-1.5 text-body-small text-danger" role="alert">
+                {errors.username.message}
+              </p>
+            )}
           </div>
         </div>
 
+        {/* Email */}
         <div>
-          <label htmlFor="register-email" className="mb-1.5 block text-sm font-medium text-[#26352e]">
+          <label htmlFor="register-email" className="mb-field-label block text-label text-surface-foreground">
             Email
           </label>
-          <input
+          <Input
             id="register-email"
             type="email"
             autoComplete="email"
@@ -153,7 +166,6 @@ const RegisterPage = () => {
             autoCorrect="off"
             aria-invalid={Boolean(errors.email)}
             aria-describedby={errors.email ? "register-email-error" : undefined}
-            className="w-full rounded-md border border-[#d5dbd5] bg-white px-3.5 py-2.5 text-sm text-[#1b2924] outline-none transition placeholder:text-[#9aa39d] focus:border-[#32634f] focus:ring-2 focus:ring-[#32634f]/15 aria-invalid:border-[#b34b43]"
             placeholder="you@example.com"
             {...registerField("email", {
               required: "Enter your email address.",
@@ -161,22 +173,27 @@ const RegisterPage = () => {
               onChange: () => setRequestError(null),
             })}
           />
-          {errors.email && <p id="register-email-error" className="mt-1 text-xs text-[#a63f38]" role="alert">{errors.email.message}</p>}
+          {errors.email && (
+            <p id="register-email-error" className="mt-1.5 text-body-small text-danger" role="alert">
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
+        {/* Password */}
         <div>
-          <label htmlFor="register-password" className="mb-1.5 block text-sm font-medium text-[#26352e]">
+          <label htmlFor="register-password" className="mb-field-label block text-label text-surface-foreground">
             Password
           </label>
           <div className="relative">
-            <input
+            <Input
               id="register-password"
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
               aria-invalid={Boolean(errors.password)}
               aria-describedby={errors.password ? "register-password-error" : undefined}
-              className="w-full rounded-md border border-[#d5dbd5] bg-white px-3.5 py-2.5 pr-16 text-sm text-[#1b2924] outline-none transition placeholder:text-[#9aa39d] focus:border-[#32634f] focus:ring-2 focus:ring-[#32634f]/15 aria-invalid:border-[#b34b43]"
               placeholder="At least 8 characters"
+              className="pr-16"
               {...registerField("password", {
                 required: "Create a password.",
                 validate: (password) => {
@@ -191,29 +208,34 @@ const RegisterPage = () => {
               onClick={() => setShowPassword((visible) => !visible)}
               aria-label={showPassword ? "Hide password" : "Show password"}
               aria-pressed={showPassword}
-              className="absolute inset-y-0 right-3 rounded px-1 text-xs font-medium text-[#537264] outline-none hover:text-[#173d32] focus-visible:ring-2 focus-visible:ring-[#32634f]"
+              className="absolute inset-y-0 right-3 rounded px-1 text-body-small font-medium text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
           </div>
-          {errors.password && <p id="register-password-error" className="mt-1 text-xs text-[#a63f38]" role="alert">{errors.password.message}</p>}
+          {errors.password && (
+            <p id="register-password-error" className="mt-1.5 text-body-small text-danger" role="alert">
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
+        {/* Coffee Price */}
         <div>
-          <label htmlFor="register-coffee-price" className="mb-1.5 block text-sm font-medium text-[#26352e]">
+          <label htmlFor="register-coffee-price" className="mb-field-label block text-label text-surface-foreground">
             Coffee Price
           </label>
-          <p className="mb-2 text-xs text-[#69746e]">
+          <p className="mb-2 text-body-small text-muted">
             How much should one coffee cost? This is the default amount supporters will see on your page.
           </p>
           <div className="relative">
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-sm font-medium text-[#69746e]"
+              className="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-body font-medium text-muted"
             >
               ₹
             </span>
-            <input
+            <Input
               id="register-coffee-price"
               type="number"
               inputMode="numeric"
@@ -226,7 +248,7 @@ const RegisterPage = () => {
                   ? "register-coffee-price-error"
                   : "register-coffee-price-help"
               }
-              className="w-full rounded-md border border-[#d5dbd5] bg-white pl-8 pr-3.5 py-2.5 text-sm text-[#1b2924] outline-none transition placeholder:text-[#9aa39d] focus:border-[#32634f] focus:ring-2 focus:ring-[#32634f]/15 aria-invalid:border-[#b34b43]"
+              className="pl-8"
               placeholder="100"
               {...registerField("coffeePrice", {
                 required: "Enter a coffee price.",
@@ -251,51 +273,62 @@ const RegisterPage = () => {
             />
           </div>
           {errors.coffeePrice ? (
-            <p id="register-coffee-price-error" className="mt-1 text-xs text-[#a63f38]" role="alert">
+            <p id="register-coffee-price-error" className="mt-1.5 text-body-small text-danger" role="alert">
               {errors.coffeePrice.message}
             </p>
           ) : (
-            <p id="register-coffee-price-help" className="mt-1 text-xs text-[#69746e]">
+            <p id="register-coffee-price-help" className="mt-1.5 text-body-small text-muted">
               Choose between ₹{MIN_COFFEE_PRICE} and ₹{MAX_COFFEE_PRICE}.
             </p>
           )}
         </div>
 
+        {/* Bio */}
         <div>
-          <label htmlFor="register-bio" className="mb-1.5 block text-sm font-medium text-[#26352e]">
-            Bio <span className="font-normal text-[#87918a]">(optional)</span>
+          <label htmlFor="register-bio" className="mb-field-label block text-label text-surface-foreground">
+            Bio <span className="font-normal text-muted">(optional)</span>
           </label>
-          <textarea
+          <Textarea
             id="register-bio"
             rows={2}
             aria-invalid={Boolean(errors.bio)}
             aria-describedby={errors.bio ? "register-bio-error" : undefined}
-            className="w-full resize-y rounded-md border border-[#d5dbd5] bg-white px-3.5 py-2.5 text-sm text-[#1b2924] outline-none transition placeholder:text-[#9aa39d] focus:border-[#32634f] focus:ring-2 focus:ring-[#32634f]/15 aria-invalid:border-[#b34b43]"
             placeholder="What do you make?"
             {...registerField("bio", { onChange: () => setRequestError(null) })}
           />
-          {errors.bio && <p id="register-bio-error" className="mt-1 text-xs text-[#a63f38]" role="alert">{errors.bio.message}</p>}
+          {errors.bio && (
+            <p id="register-bio-error" className="mt-1.5 text-body-small text-danger" role="alert">
+              {errors.bio.message}
+            </p>
+          )}
         </div>
 
+        {/* Error banner */}
         {requestError && (
-          <p className="rounded-md border border-[#e8c9c5] bg-[#fbf0ee] px-3.5 py-2.5 text-sm text-[#963b35]" role="alert">
-            {requestError}
-          </p>
+          <div className="rounded-card border border-danger-border bg-danger-surface px-4 py-3 animate-fade-in" role="alert">
+            <p className="text-body-small text-danger-foreground">{requestError}</p>
+          </div>
         )}
 
-        <button
+        {/* Submit */}
+        <Button
           type="submit"
           disabled={isLoading}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-[#173d32] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#245343] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#32634f] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-65"
+          className="w-full"
         >
-          {isLoading && <span aria-hidden="true" className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />}
+          {isLoading && (
+            <span aria-hidden="true" className="size-4 animate-spin rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground" />
+          )}
           {isLoading ? "Creating account…" : "Create account"}
-        </button>
+        </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-[#69746e]">
+      <p className="mt-6 text-center text-body-small text-muted">
         Already have an account?{" "}
-        <Link to="/login" className="font-semibold text-[#245343] underline decoration-[#9cb3a5] underline-offset-4 hover:text-[#173d32] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#32634f]">
+        <Link
+          to="/login"
+          className="font-semibold text-primary underline decoration-primary/30 underline-offset-4 transition-colors hover:text-primary-hover hover:decoration-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+        >
           Sign in
         </Link>
       </p>

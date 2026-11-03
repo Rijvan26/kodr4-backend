@@ -8,7 +8,6 @@ router.post("/create-order", requireAuth, createOrder);
 
 router.post(
     "/verify-payment",
-    requireAuth,
     verifyPayment
 );
 

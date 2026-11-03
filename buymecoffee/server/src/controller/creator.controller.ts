@@ -125,10 +125,7 @@ export const getCreatorDashboard = asyncHandler(
     );
 
     sendSuccess(response, 200, "Creator dashboard fetched", {
-      creator: {
-        name: creator.name,
-        username: creator.username,
-      },
+      creator: { name: creator.name, username: creator.username, avatarUrl: creator.avatarUrl, coffeePrice: getValidCoffeePrice(creator.coffeePrice), },
       ...dashboard,
     });
   },

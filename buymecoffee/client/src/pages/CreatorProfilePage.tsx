@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import {
   useGetCreatorProfileQuery,
@@ -6,7 +7,6 @@ import {
 } from "../features/creator/api/creator.api";
 import { getAuthFormErrorDetails } from "../features/auth/utils/authFormErrors";
 import Button from "../shared/ui/Button";
-import Card from "../shared/ui/Card";
 import Input from "../shared/ui/Input";
 import Textarea from "../shared/ui/Textarea";
 
@@ -41,7 +41,7 @@ const CreatorProfilePage = () => {
     handleSubmit,
     reset,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<CreatorProfileFormValues>({
     defaultValues: {
       name: "",
@@ -123,30 +123,35 @@ const CreatorProfilePage = () => {
 
   if (isLoadingProfile) {
     return (
-      <main className="min-h-screen bg-background px-page-gutter py-page-block text-foreground sm:px-page-gutter-wide">
-        <p className="mx-auto max-w-3xl text-body text-muted" role="status">
-          Loading profile...
-        </p>
+      <main className="min-h-[calc(100vh-4rem)] px-page-gutter py-page-block sm:px-page-gutter-wide">
+        <div className="mx-auto max-w-3xl">
+          <div className="flex items-center gap-3" role="status">
+            <span aria-hidden="true" className="size-5 animate-spin rounded-full border-2 border-primary/20 border-t-primary" />
+            <p className="text-body text-muted">Loading profile…</p>
+          </div>
+        </div>
       </main>
     );
   }
 
   if (!creator) {
     return (
-      <main className="min-h-screen bg-background px-page-gutter py-page-block text-foreground sm:px-page-gutter-wide">
-        <section className="mx-auto max-w-3xl" aria-labelledby="profile-heading">
-          <p className="text-caption tracking-eyebrow text-primary-muted-foreground">
+      <main className="min-h-[calc(100vh-4rem)] px-page-gutter py-page-block sm:px-page-gutter-wide">
+        <section className="mx-auto max-w-3xl animate-fade-in" aria-labelledby="profile-heading">
+          <p className="text-caption tracking-kicker text-primary font-semibold">
             CREATOR ACCOUNT
           </p>
           <h1
             id="profile-heading"
-            className="mt-3 font-serif text-page-title-mobile text-foreground sm:text-heading"
+            className="mt-3 font-display text-heading text-foreground"
           >
             Creator profile
           </h1>
-          <p className="mt-5 rounded-card border border-danger-border bg-danger-surface px-control-x py-control-y text-body text-danger-foreground" role="alert">
-            {profileErrorMessage}
-          </p>
+          <div className="mt-6 rounded-card border border-danger-border bg-danger-surface px-5 py-4" role="alert">
+            <p className="font-medium text-danger-foreground">
+              {profileErrorMessage}
+            </p>
+          </div>
           <Button
             type="button"
             density="compact"
@@ -154,7 +159,7 @@ const CreatorProfilePage = () => {
             disabled={isFetchingProfile}
             className="mt-5"
           >
-            {isFetchingProfile ? "Loading..." : "Try again"}
+            {isFetchingProfile ? "Loading…" : "Try again"}
           </Button>
         </section>
       </main>
@@ -162,57 +167,85 @@ const CreatorProfilePage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-background px-page-gutter py-page-block text-foreground sm:px-page-gutter-wide sm:py-page-block-wide">
+    <main className="min-h-[calc(100vh-4rem)] px-page-gutter py-page-block sm:px-page-gutter-wide sm:py-page-block-wide">
       <div className="mx-auto max-w-3xl">
-        <header className="mb-8">
-          <p className="text-caption tracking-eyebrow text-primary-muted-foreground">
-            CREATOR ACCOUNT
-          </p>
-          <h1 className="mt-3 font-serif text-page-title-mobile text-foreground sm:text-heading">
-            Creator profile
-          </h1>
-          <p className="mt-2 text-body-relaxed text-muted">
-            Manage the details shown on your creator account.
-          </p>
+        {/* Page header */}
+        <header className="animate-fade-in-up mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <p className="text-caption tracking-kicker text-primary font-semibold">
+              SUPPORTME.COM SETTINGS
+            </p>
+            <h1 className="mt-2 font-display text-heading text-foreground">
+              Creator profile
+            </h1>
+            <p className="mt-1 text-body-relaxed text-muted">
+              Customize the profile and coffee price shown on your public page.
+            </p>
+          </div>
+          <Link
+            to={`/@${encodeURIComponent(creator.username)}`}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover underline decoration-primary/30"
+          >
+            <span>View public page</span>
+            <span>&rarr;</span>
+          </Link>
         </header>
 
-        <Card
-          className="p-panel sm:p-panel-wide"
+        {/* Account info — read only */}
+        <section
+          className="animate-fade-in-up delay-1 rounded-card-lg border border-border bg-surface p-6 sm:p-8 shadow-xs"
+          aria-labelledby="account-info-heading"
+        >
+          <h2 id="account-info-heading" className="text-section-heading text-foreground">
+            Account information
+          </h2>
+          <p className="mt-1 text-body-small text-muted">
+            Your unique URL and account credentials.
+          </p>
+
+          <dl className="mt-5 grid gap-5 sm:grid-cols-3">
+            <div>
+              <dt className="text-meta text-muted font-medium uppercase tracking-wider">Your supportme.com URL</dt>
+              <dd className="mt-1.5 text-label text-emerald-800 font-semibold font-mono text-xs">
+                supportme.com/@{creator.username}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-meta text-muted font-medium uppercase tracking-wider">Email</dt>
+              <dd className="mt-1.5 break-all text-label text-surface-foreground">
+                {creator.email}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-meta text-muted font-medium uppercase tracking-wider">Default coffee price</dt>
+              <dd className="mt-1.5 text-label text-surface-foreground font-medium">
+                ☕ ₹{creator.coffeePrice}
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        {/* Editable profile form */}
+        <section
+          className="animate-fade-in-up delay-2 mt-6 rounded-card-lg border border-border bg-surface p-6 sm:p-8"
           aria-labelledby="profile-details-heading"
         >
           <h2
             id="profile-details-heading"
             className="text-section-heading text-foreground"
           >
-            Profile details
+            Edit profile
           </h2>
-
-          <dl className="mt-5 grid gap-4 border-b border-border-subtle pb-6 sm:grid-cols-3">
-            <div>
-              <dt className="text-meta text-muted">Username</dt>
-              <dd className="mt-1 text-label text-surface-foreground">
-                @{creator.username}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-meta text-muted">Email</dt>
-              <dd className="mt-1 break-all text-label text-surface-foreground">
-                {creator.email}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-meta text-muted">Default coffee price</dt>
-              <dd className="mt-1 text-label text-surface-foreground">
-                ☕ ₹{creator.coffeePrice}
-              </dd>
-            </div>
-          </dl>
+          <p className="mt-1 text-body-small text-muted">
+            Update the information shown to your supporters.
+          </p>
 
           <form
             className="mt-6 space-y-form-gap"
             noValidate
             onSubmit={handleSubmit(handleProfileUpdate)}
           >
+            {/* Name */}
             <div>
               <label
                 htmlFor="creator-name"
@@ -252,6 +285,7 @@ const CreatorProfilePage = () => {
               )}
             </div>
 
+            {/* Bio */}
             <div>
               <label
                 htmlFor="creator-bio"
@@ -287,6 +321,7 @@ const CreatorProfilePage = () => {
               )}
             </div>
 
+            {/* Avatar URL */}
             <div>
               <label
                 htmlFor="creator-avatar-url"
@@ -332,6 +367,7 @@ const CreatorProfilePage = () => {
               )}
             </div>
 
+            {/* Coffee Price */}
             <div>
               <label
                 htmlFor="creator-coffee-price"
@@ -395,41 +431,55 @@ const CreatorProfilePage = () => {
               )}
             </div>
 
+            {/* Status messages */}
             {requestError && (
-              <p
-                className="rounded-card border border-danger-border bg-danger-surface px-control-x py-control-y text-body text-danger-foreground"
+              <div
+                className="rounded-card border border-danger-border bg-danger-surface px-5 py-4 animate-fade-in"
                 role="alert"
               >
-                {requestError}
-              </p>
+                <p className="text-body-small font-medium text-danger-foreground">{requestError}</p>
+              </div>
             )}
 
             {successMessage && (
-              <p
-                className="rounded-card border border-success-border bg-success-surface px-control-x py-control-y text-body text-success"
+              <div
+                className="rounded-card border border-success-border bg-success-surface px-5 py-4 animate-fade-in"
                 role="status"
               >
-                {successMessage}
-              </p>
+                <div className="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" className="text-success-foreground shrink-0">
+                    <path d="M8 0a8 8 0 110 16A8 8 0 018 0zm3.41 5.29a.75.75 0 00-1.06-1.06L7 7.59 5.65 6.24a.75.75 0 00-1.06 1.06l1.88 1.88a.75.75 0 001.06 0l3.88-3.89z" />
+                  </svg>
+                  <p className="text-body-small font-medium text-success-foreground">{successMessage}</p>
+                </div>
+              </div>
             )}
 
-            <div className="flex justify-end border-t border-border-subtle pt-5">
-              <Button
-                type="submit"
-                disabled={isSaving}
-                className="min-w-button-min-width"
-              >
-                {isSaving && (
-                  <span
-                    aria-hidden="true"
-                    className="size-4 animate-spin rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground"
-                  />
-                )}
-                {isSaving ? "Saving..." : "Save changes"}
-              </Button>
+            {/* Actions */}
+            <div className="flex items-center justify-between border-t border-border-subtle pt-5">
+              {isDirty && (
+                <p className="text-body-small text-primary animate-fade-in">
+                  You have unsaved changes
+                </p>
+              )}
+              <div className="ml-auto">
+                <Button
+                  type="submit"
+                  disabled={isSaving}
+                  className="min-w-button-min-width"
+                >
+                  {isSaving && (
+                    <span
+                      aria-hidden="true"
+                      className="size-4 animate-spin rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground"
+                    />
+                  )}
+                  {isSaving ? "Saving…" : "Save changes"}
+                </Button>
+              </div>
             </div>
           </form>
-        </Card>
+        </section>
       </div>
     </main>
   );

@@ -45,6 +45,12 @@ export const useRazorpay = () => {
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
+  const resetCheckout = () => {
+    setCheckoutResponse(null);
+    setCheckoutError(null);
+    setIsCheckoutOpen(false);
+  };
+
   const openCheckout = async ({
     order,
     creatorName,
@@ -100,6 +106,7 @@ export const useRazorpay = () => {
 
   return {
     openCheckout,
+    resetCheckout,
     checkoutResponse,
     checkoutError,
     isCheckoutOpen,

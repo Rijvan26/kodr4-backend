@@ -1,7 +1,7 @@
 import  type { Request, Response } from "express";
 import {Types} from "mongoose"
 import { razorpay } from "../config/razorpay.js";
-import { createPayment, findPaymentByRazorpayOrderId } from "../DAO/payment.dao.js";
+import { createPayment, findPaymentByRazorpayOrderId, markPaymentPaidByRazorpayOrderId } from "../DAO/payment.dao.js";
 import { appError } from "../utils/appError.js";
 import crypto from "crypto";
 import { configEnv } from "../config/env.js";
@@ -46,50 +46,55 @@ const payment = await createPayment({
     });
 };
 
-export const verifyPayment = async (
-    req: Request,
-    res: Response
-) => {
-    const {
-        razorpay_order_id,
-        razorpay_payment_id,
-        razorpay_signature,
-    } = req.body;
+export const verifyPayment = asyncHandler(
+    async (req: Request, res: Response) => {
+        const {
+            razorpay_order_id,
+            razorpay_payment_id,
+            razorpay_signature,
+        } = req.body;
 
-    if (
-        !razorpay_order_id ||
-        !razorpay_payment_id ||
-        !razorpay_signature
-    ) {
-        return res.status(400).json({
-            success: false,
-            message: "Payment verification data is missing",
+        if (
+            !razorpay_order_id ||
+            !razorpay_payment_id ||
+            !razorpay_signature
+        ) {
+            throw new appError("Payment verification data is missing", 400);
+        }
+
+        const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+        const expectedSignature = crypto
+            .createHmac("sha256", configEnv.RAZORPAY_KEY_SECRET)
+            .update(body)
+            .digest("hex");
+
+        if (expectedSignature !== razorpay_signature) {
+            throw new appError("Invalid payment signature", 400);
+        }
+
+        const payment = await markPaymentPaidByRazorpayOrderId(
+            razorpay_order_id,
+            razorpay_payment_id,
+        );
+
+        if (!payment) {
+            throw new appError("Payment record not found", 404);
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Payment signature verified",
+            data: {
+                status: payment.status,
+                amount: payment.amount,
+                coffeeQuantity: payment.coffeeQuantity,
+                currency: payment.currency,
+                createdAt: payment.createdAt,
+            },
         });
-    }
-
-    const body =
-        razorpay_order_id + "|" + razorpay_payment_id;
-
-    const expectedSignature = crypto
-        .createHmac(
-            "sha256",
-            configEnv.RAZORPAY_KEY_SECRET
-        )
-        .update(body)
-        .digest("hex");
-
-    if (expectedSignature !== razorpay_signature) {
-        return res.status(400).json({
-            success: false,
-            message: "Invalid payment signature",
-        });
-    }
-
-    return res.status(200).json({
-        success: true,
-        message: "Payment signature verified",
-    });
-};
+    },
+);
 
 export const createSupportOrder = asyncHandler(
     async (req: Request, res: Response) => {

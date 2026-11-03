@@ -64,10 +64,14 @@ export const markPaymentPaidByRazorpayOrderId = async (
     razorpayOrderId: string,
     razorpayPaymentId: string,
 ) => {
-    return updatePaymentByRazorpayOrderId(razorpayOrderId, {
+    const updated = await updatePaymentByRazorpayOrderId(razorpayOrderId, {
         status: "paid",
         razorpayPaymentId,
     });
+    if (!updated) {
+        return await findPaymentByRazorpayOrderId(razorpayOrderId);
+    }
+    return updated;
 };
 
 export const markPaymentFailedByRazorpayOrderId = async (
@@ -148,6 +152,7 @@ export const getCreatorPaymentDashboard = async (creatorId: string) => {
         totalAmount: dashboard?.summary[0]?.totalAmount ?? 0,
         totalSupporters: dashboard?.supporters[0]?.totalSupporters ?? 0,
         successfulPayments: dashboard?.summary[0]?.successfulPayments ?? 0,
+        totalSuccessfulPayments: dashboard?.summary[0]?.successfulPayments ?? 0,
         recentPayments: dashboard?.recentPayments ?? [],
     };
 };

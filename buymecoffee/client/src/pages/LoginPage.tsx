@@ -3,6 +3,8 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../features/auth/hook/auth.hook";
 import { getAuthFormErrorDetails } from "../features/auth/utils/authFormErrors";
+import Input from "../shared/ui/Input";
+import Button from "../shared/ui/Button";
 
 interface LoginFormValues {
   email: string;
@@ -46,20 +48,23 @@ const LoginPage = () => {
 
   return (
     <section aria-labelledby="login-heading">
-      <p className="text-[11px] font-semibold tracking-[0.18em] text-[#537264]">YOUR CREATOR ACCOUNT</p>
-      <h2 id="login-heading" className="mt-4 font-serif text-[38px] leading-tight text-[#1b2924]">
+      <p className="text-caption tracking-kicker text-primary font-semibold">
+        SUPPORTME.COM CREATOR LOGIN
+      </p>
+      <h2 id="login-heading" className="mt-3 font-display text-heading text-foreground">
         Welcome back.
       </h2>
-      <p className="mt-3 text-sm leading-6 text-[#69746e]">
-        Sign in to continue to your space.
+      <p className="mt-2 text-body-relaxed text-muted">
+        Sign in to manage your page and track your supporters.
       </p>
 
-      <form className="mt-8 space-y-5" noValidate onSubmit={handleSubmit(handleLogin)}>
+      <form className="mt-7 space-y-5" noValidate onSubmit={handleSubmit(handleLogin)}>
+        {/* Email */}
         <div>
-          <label htmlFor="login-email" className="mb-2 block text-sm font-medium text-[#26352e]">
-            Email
+          <label htmlFor="login-email" className="mb-field-label block text-label text-surface-foreground">
+            Email address
           </label>
-          <input
+          <Input
             id="login-email"
             type="email"
             autoComplete="username"
@@ -67,7 +72,6 @@ const LoginPage = () => {
             autoCorrect="off"
             aria-invalid={Boolean(errors.email)}
             aria-describedby={errors.email ? "login-email-error" : undefined}
-            className="w-full rounded-md border border-[#d5dbd5] bg-white px-3.5 py-3 text-sm text-[#1b2924] outline-none transition placeholder:text-[#9aa39d] focus:border-[#32634f] focus:ring-2 focus:ring-[#32634f]/15 aria-invalid:border-[#b34b43]"
             placeholder="you@example.com"
             {...register("email", {
               required: "Enter your email address.",
@@ -76,25 +80,26 @@ const LoginPage = () => {
             })}
           />
           {errors.email && (
-            <p id="login-email-error" className="mt-1.5 text-xs text-[#a63f38]" role="alert">
+            <p id="login-email-error" className="mt-1.5 text-body-small text-danger" role="alert">
               {errors.email.message}
             </p>
           )}
         </div>
 
+        {/* Password */}
         <div>
-          <label htmlFor="login-password" className="mb-2 block text-sm font-medium text-[#26352e]">
+          <label htmlFor="login-password" className="mb-field-label block text-label text-surface-foreground">
             Password
           </label>
           <div className="relative">
-            <input
+            <Input
               id="login-password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               aria-invalid={Boolean(errors.password)}
               aria-describedby={errors.password ? "login-password-error" : undefined}
-              className="w-full rounded-md border border-[#d5dbd5] bg-white px-3.5 py-3 pr-16 text-sm text-[#1b2924] outline-none transition placeholder:text-[#9aa39d] focus:border-[#32634f] focus:ring-2 focus:ring-[#32634f]/15 aria-invalid:border-[#b34b43]"
               placeholder="Your password"
+              className="pr-12"
               {...register("password", {
                 required: "Enter your password.",
                 onChange: () => setRequestError(null),
@@ -102,41 +107,47 @@ const LoginPage = () => {
             />
             <button
               type="button"
-              onClick={() => setShowPassword((visible) => !visible)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-body-small text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-small px-1"
+              onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              aria-pressed={showPassword}
-              className="absolute inset-y-0 right-3 rounded px-1 text-xs font-medium text-[#537264] outline-none hover:text-[#173d32] focus-visible:ring-2 focus-visible:ring-[#32634f]"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
           </div>
           {errors.password && (
-            <p id="login-password-error" className="mt-1.5 text-xs text-[#a63f38]" role="alert">
+            <p id="login-password-error" className="mt-1.5 text-body-small text-danger" role="alert">
               {errors.password.message}
             </p>
           )}
         </div>
 
+        {/* Request Error Banner */}
         {requestError && (
-          <p className="rounded-md border border-[#e8c9c5] bg-[#fbf0ee] px-3.5 py-3 text-sm text-[#963b35]" role="alert">
+          <div className="rounded-card border border-danger-border bg-danger-surface px-4 py-3 text-body-small text-danger-foreground animate-fade-in" role="alert">
             {requestError}
-          </p>
+          </div>
         )}
 
-        <button
+        {/* Submit */}
+        <Button
           type="submit"
           disabled={isLoading}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-[#173d32] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#245343] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#32634f] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-65"
+          className="w-full shadow-sm"
         >
-          {isLoading && <span aria-hidden="true" className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />}
-          {isLoading ? "Signing in…" : "Sign in"}
-        </button>
+          {isLoading && (
+            <span aria-hidden="true" className="size-4 animate-spin rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground mr-2" />
+          )}
+          {isLoading ? "Signing in…" : "Sign in to your dashboard"}
+        </Button>
       </form>
 
-      <p className="mt-7 text-center text-sm text-[#69746e]">
-        New here?{" "}
-        <Link to="/register" className="font-semibold text-[#245343] underline decoration-[#9cb3a5] underline-offset-4 hover:text-[#173d32] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#32634f]">
-          Create an account
+      <p className="mt-7 text-center text-body-small text-muted">
+        New to supportme.com?{" "}
+        <Link
+          to="/register"
+          className="font-semibold text-primary underline decoration-primary/30 underline-offset-4 transition-colors hover:text-primary-hover hover:decoration-primary"
+        >
+          Create your page
         </Link>
       </p>
     </section>

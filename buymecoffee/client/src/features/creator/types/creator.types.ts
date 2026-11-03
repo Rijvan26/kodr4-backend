@@ -57,10 +57,13 @@ export interface CreatorDashboardResponse {
     creator: {
       name: string;
       username: string;
+      avatarUrl?: string;
+      coffeePrice?: number;
     };
     totalAmount: number;
     totalSupporters: number;
     successfulPayments: number;
+    totalSuccessfulPayments?: number;
     recentPayments: CreatorDashboardPayment[];
   };
 }
