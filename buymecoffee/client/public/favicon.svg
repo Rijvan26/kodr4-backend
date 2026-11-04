@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F3D2E"/>
+      <stop offset="100%" stop-color="#002116"/>
+    </linearGradient>
+    <linearGradient id="cupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB95F"/>
+      <stop offset="100%" stop-color="#FEA619"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded badge -->
+  <rect width="32" height="32" rx="7.5" fill="url(#bgGrad)"/>
+  <rect x="0.5" y="0.5" width="31" height="31" rx="7" fill="none" stroke="#234F3F" stroke-width="1" stroke-opacity="0.8"/>
+
+  <!-- Rising aroma / steam lines -->
+  <path d="M10.8 6.5C11.8 7.6 11.8 8.8 10.8 9.8" stroke="#D6E8C5" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M14.8 5.5C16 6.8 16 8.3 14.8 9.6" stroke="#D6E8C5" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M18.8 6.8C19.7 7.8 19.7 8.9 18.8 9.8" stroke="#D6E8C5" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.85"/>
+
+  <!-- Coffee cup handle -->
+  <path d="M20.5 15.2H22.8C24.3 15.2 25.5 16.4 25.5 17.8C25.5 19.3 24.3 20.4 22.8 20.4H20.5" stroke="url(#cupGrad)" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Coffee cup body -->
+  <path d="M7 13H21V19.2C21 22.4 18.5 24.5 15 24.5H13C9.5 24.5 7 22.4 7 19.2V13Z" fill="url(#cupGrad)"/>
+
+  <!-- Coffee surface rim highlight -->
+  <ellipse cx="14" cy="13.2" rx="6.5" ry="1.2" fill="#FFE0B2" fill-opacity="0.5"/>
+
+  <!-- Saucer plate -->
+  <rect x="5.5" y="25.5" width="17" height="1.8" rx="0.9" fill="#FFB95F" fill-opacity="0.95"/>
+</svg>
+
