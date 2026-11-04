@@ -3,4 +3,6 @@ export interface CreateSupportOrderRequest {
   name: string;
   email: string;
   coffeeQuantity: number;
+  message?: string;
+  isPrivate?: boolean;
 }

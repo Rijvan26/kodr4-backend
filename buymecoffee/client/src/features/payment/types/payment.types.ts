@@ -3,6 +3,8 @@ export interface CreatePaymentOrderRequest {
   name: string;
   email: string;
   coffeeQuantity: number;
+  message?: string;
+  isPrivate?: boolean;
 }
 
 export interface RazorpayOrderResponse {

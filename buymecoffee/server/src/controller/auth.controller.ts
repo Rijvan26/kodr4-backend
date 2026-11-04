@@ -6,7 +6,7 @@ import {
 } from "../DAO/user.dao.js";
 import { updateRefreshToken, clearRefreshToken, getSessionByToken } from "../DAO/session.dao.js";
 import { configEnv } from "../config/env.js";
-import { appError } from "../utils/appError.js"; // Ensure this matches your file capitalization
+import { appError } from "../utils/appError.js";
 import { sendSuccess } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../utils/jwt.js";
@@ -33,6 +33,8 @@ function toPublicUser(user: User): PublicUser {
         name: user.name,
         username: user.username,
         email: user.email,
+        avatarUrl: user.avatarUrl,
+        bio: user.bio,
         coffeePrice: getValidCoffeePrice(user.coffeePrice),
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
@@ -63,7 +65,7 @@ function setRefreshCookie(res: Response, token: string): void {
  * POST /auth/register — creates a user and issues tokens.
  */
 export const register = asyncHandler(async (req: Request, res: Response) => {
-    const { name, username, email, password, bio, coffeePrice } = req.body;
+    const { name, username, email, password, bio, avatarUrl, coffeePrice } = req.body;
     
     const user = await createUser({ 
         name, 
@@ -71,6 +73,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
         email, 
         password, 
         bio,
+        avatarUrl: avatarUrl ? avatarUrl.trim() : undefined,
         coffeePrice,
     });
     
@@ -90,9 +93,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const user = await findUserByEmail(email);
     
-    // Because user is typed, TS knows comparePassword exists
     if (!user || !(await user.comparePassword(password))) {
-        throw new appError("Invalid credentials",401);
+        throw new appError("Invalid credentials", 401);
     }
 
     const { accessToken, refreshToken } = await issueTokens(user);
@@ -109,7 +111,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
  */
 export const refresh = asyncHandler(async (req: Request, res: Response) => {
     const token = req.cookies?.[REFRESH_COOKIE];
-    if (!token) throw new appError( "Refresh token missing",401);
+    if (!token) throw new appError("Refresh token missing", 401);
 
     let payload: { id: string; email: string };
     try {
@@ -124,7 +126,7 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
 
     if (!user || !session) {
         res.clearCookie(REFRESH_COOKIE, refreshCookieOptions);
-        throw new appError( "Invalid refresh token",401);
+        throw new appError("Invalid refresh token", 401);
     }
 
     const tokens = await issueTokens(user);
@@ -150,7 +152,5 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
  * GET /auth/me — returns the authenticated user.
  */
 export const me = asyncHandler(async (req: Request, res: Response) => {
-    // The "!" tells TypeScript: "I guarantee req.user exists here" 
-    // because this route sits behind the requireAuth middleware.
     sendSuccess(res, 200, "User fetched", { user: toPublicUser(req.user!) });
 });

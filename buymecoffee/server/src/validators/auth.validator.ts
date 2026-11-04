@@ -56,6 +56,14 @@ export const registerValidator: ValidationChain[] = [
         .trim()
         .isLength({ max: 160 })
         .withMessage("Bio must be 160 characters or fewer"),
+    body("avatarUrl")
+        .optional({ values: "falsy" })
+        .isString()
+        .withMessage("Avatar URL must be text")
+        .bail()
+        .trim()
+        .isURL()
+        .withMessage("Avatar URL must be a valid URL"),
     body("coffeePrice")
         .notEmpty()
         .withMessage("Coffee price is required")

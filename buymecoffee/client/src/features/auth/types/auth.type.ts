@@ -3,6 +3,8 @@ export interface User {
   name: string;
   username: string;
   email: string;
+  avatarUrl?: string;
+  bio?: string;
   coffeePrice: number;
   createdAt: string;
   updatedAt: string;
@@ -19,6 +21,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   bio?: string;
+  avatarUrl?: string;
   coffeePrice: number;
 }
 
@@ -48,7 +51,7 @@ export interface RefreshResponse {
 }
 
 export interface LogoutResponse {
-  success: true;
+  success: boolean;
   message: string;
   data: null;
 }

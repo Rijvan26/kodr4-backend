@@ -22,7 +22,7 @@ const editableProfileFields = [
     .isLength({ max: 160 })
     .withMessage("Bio must be 160 characters or fewer"),
   body("avatarUrl")
-    .optional()
+    .optional({ values: "falsy" })
     .isString()
     .withMessage("Avatar URL must be a string")
     .bail()
@@ -34,6 +34,50 @@ const editableProfileFields = [
     .isInt({ min: MIN_COFFEE_PRICE, max: MAX_COFFEE_PRICE })
     .withMessage(`Coffee price must be a whole number between ${MIN_COFFEE_PRICE} and ${MAX_COFFEE_PRICE}`)
     .toInt(),
+  body("socialLinks")
+    .optional()
+    .isObject()
+    .withMessage("Social links must be an object"),
+  body("socialLinks.instagram")
+    .optional()
+    .isString()
+    .trim(),
+  body("socialLinks.youtube")
+    .optional()
+    .isString()
+    .trim(),
+  body("socialLinks.twitter")
+    .optional()
+    .isString()
+    .trim(),
+  body("socialLinks.website")
+    .optional()
+    .isString()
+    .trim(),
+  body("goal")
+    .optional()
+    .isObject()
+    .withMessage("Goal must be an object"),
+  body("goal.title")
+    .optional()
+    .isString()
+    .trim(),
+  body("goal.targetAmount")
+    .optional()
+    .isNumeric()
+    .toFloat(),
+  body("goal.showGoal")
+    .optional()
+    .isBoolean()
+    .toBoolean(),
+  body("thankYouMessage")
+    .optional()
+    .isString()
+    .trim(),
+  body("allowPublicMessages")
+    .optional()
+    .isBoolean()
+    .toBoolean(),
 ];
 
 export const validateCreatorProfileUpdate = [

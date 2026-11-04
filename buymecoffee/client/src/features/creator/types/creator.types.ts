@@ -1,3 +1,16 @@
+export interface CreatorSocialLinks {
+  instagram?: string;
+  youtube?: string;
+  twitter?: string;
+  website?: string;
+}
+
+export interface CreatorGoal {
+  title?: string;
+  targetAmount?: number;
+  showGoal?: boolean;
+}
+
 export interface CreatorProfile {
   id: string;
   name: string;
@@ -6,6 +19,10 @@ export interface CreatorProfile {
   bio: string;
   avatarUrl: string;
   coffeePrice: number;
+  socialLinks?: CreatorSocialLinks;
+  goal?: CreatorGoal;
+  thankYouMessage?: string;
+  allowPublicMessages?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,6 +40,10 @@ export interface UpdateCreatorProfileRequest {
   bio?: string;
   avatarUrl?: string;
   coffeePrice?: number;
+  socialLinks?: CreatorSocialLinks;
+  goal?: CreatorGoal;
+  thankYouMessage?: string;
+  allowPublicMessages?: boolean;
 }
 
 export interface PublicCreator {
@@ -32,6 +53,19 @@ export interface PublicCreator {
   bio: string;
   avatarUrl: string;
   coffeePrice: number;
+  socialLinks?: CreatorSocialLinks;
+  goal?: CreatorGoal;
+}
+
+export interface PublicSupporter {
+  supporterName: string;
+  amount: number;
+  currency: string;
+  coffeeQuantity?: number;
+  message?: string;
+  isPrivate?: boolean;
+  date: string;
+  status: "paid";
 }
 
 export interface PublicCreatorResponse {
@@ -39,6 +73,10 @@ export interface PublicCreatorResponse {
   message: string;
   data: {
     creator: PublicCreator;
+    totalAmount?: number;
+    totalSupporters?: number;
+    successfulPayments?: number;
+    recentPayments?: PublicSupporter[];
   };
 }
 
@@ -46,6 +84,9 @@ export interface CreatorDashboardPayment {
   supporterName: string;
   amount: number;
   currency: string;
+  coffeeQuantity?: number;
+  message?: string;
+  isPrivate?: boolean;
   date: string;
   status: "paid";
 }
@@ -64,6 +105,7 @@ export interface CreatorDashboardResponse {
     totalSupporters: number;
     successfulPayments: number;
     totalSuccessfulPayments?: number;
+    totalCups?: number;
     recentPayments: CreatorDashboardPayment[];
   };
 }

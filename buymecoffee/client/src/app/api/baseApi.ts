@@ -3,8 +3,7 @@ import { baseQuery } from "./baseQuery";
 
 export const baseApi = createApi({
   reducerPath: "api",
-
   baseQuery,
-
+  tagTypes: ["CreatorProfile", "CreatorDashboard", "PublicCreator", "Auth"],
   endpoints: () => ({}),
 });

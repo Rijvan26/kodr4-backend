@@ -1,17 +1,19 @@
 import mongoose, { Document, Types } from "mongoose";
 
 export interface IPayment extends Document {
-    sender?: Types.ObjectId;
+    sender?: Types.ObjectId | undefined;
     creator: Types.ObjectId;
-    supporterName?: string;
-    supporterEmail?: string;
-    coffeeQuantity?: number;
+    supporterName?: string | undefined;
+    supporterEmail?: string | undefined;
+    coffeeQuantity?: number | undefined;
+    message?: string | undefined;
+    isPrivate?: boolean | undefined;
 
     amount: number;
     currency: string;
 
     razorpayOrderId: string;
-    razorpayPaymentId?: string;
+    razorpayPaymentId?: string | undefined;
 
     status: "created" | "paid" | "failed";
 
@@ -33,6 +35,14 @@ const paymentSchema = new mongoose.Schema<IPayment>(
             type: String,
             trim: true,
             lowercase: true,
+        },
+        message: {
+            type: String,
+            trim: true,
+        },
+        isPrivate: {
+            type: Boolean,
+            default: false,
         },
 
         creator: {

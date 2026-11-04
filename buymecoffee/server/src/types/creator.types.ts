@@ -1,3 +1,16 @@
+export interface CreatorSocialLinks {
+  instagram?: string | undefined;
+  youtube?: string | undefined;
+  twitter?: string | undefined;
+  website?: string | undefined;
+}
+
+export interface CreatorGoal {
+  title?: string | undefined;
+  targetAmount?: number | undefined;
+  showGoal?: boolean | undefined;
+}
+
 export interface CreatorProfile {
   id: string;
   name: string;
@@ -6,15 +19,23 @@ export interface CreatorProfile {
   bio: string;
   avatarUrl: string;
   coffeePrice: number;
+  socialLinks?: CreatorSocialLinks | undefined;
+  goal?: CreatorGoal | undefined;
+  thankYouMessage?: string | undefined;
+  allowPublicMessages?: boolean | undefined;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface UpdateCreatorProfileRequest {
-  name?: string;
-  bio?: string;
-  avatarUrl?: string;
-  coffeePrice?: number;
+  name?: string | undefined;
+  bio?: string | undefined;
+  avatarUrl?: string | undefined;
+  coffeePrice?: number | undefined;
+  socialLinks?: CreatorSocialLinks | undefined;
+  goal?: CreatorGoal | undefined;
+  thankYouMessage?: string | undefined;
+  allowPublicMessages?: boolean | undefined;
 }
 
 export interface CreatorProfileResponse {
@@ -32,4 +53,6 @@ export interface PublicCreator {
   bio: string;
   avatarUrl: string;
   coffeePrice: number;
+  socialLinks?: CreatorSocialLinks | undefined;
+  goal?: CreatorGoal | undefined;
 }

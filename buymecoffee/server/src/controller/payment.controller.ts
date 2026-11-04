@@ -103,6 +103,8 @@ export const createSupportOrder = asyncHandler(
             name,
             email,
             coffeeQuantity,
+            message,
+            isPrivate,
         } = req.body as CreateSupportOrderRequest;
 
         const creator = await findPublicCreatorByUsername(creatorUsername);
@@ -127,6 +129,8 @@ export const createSupportOrder = asyncHandler(
             amount,
             currency: "INR",
             razorpayOrderId: order.id,
+            message: message ? message.trim() : undefined,
+            isPrivate: Boolean(isPrivate),
         });
 
         return res.status(201).json({

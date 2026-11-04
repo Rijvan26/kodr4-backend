@@ -36,6 +36,18 @@ const createSupportOrderFields: ValidationChain[] = [
     .isInt({ min: MIN_COFFEE_QUANTITY, max: MAX_COFFEE_QUANTITY })
     .withMessage(`Coffee quantity must be a whole number between ${MIN_COFFEE_QUANTITY} and ${MAX_COFFEE_QUANTITY}`)
     .toInt(),
+  body("message")
+    .optional()
+    .isString()
+    .withMessage("Message must be a string")
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage("Message must not exceed 500 characters"),
+  body("isPrivate")
+    .optional()
+    .isBoolean()
+    .withMessage("isPrivate must be a boolean")
+    .toBoolean(),
 ];
 
 export const validateCreateSupportOrder = [

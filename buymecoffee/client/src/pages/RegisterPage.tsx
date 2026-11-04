@@ -14,6 +14,7 @@ interface RegisterFormValues {
   password: string;
   coffeePrice: number;
   bio: string;
+  avatarUrl?: string;
 }
 
 const MIN_COFFEE_PRICE = 20;
@@ -33,14 +34,18 @@ const RegisterPage = () => {
     register: registerField,
     handleSubmit,
     setError,
+    watch,
     formState: { errors },
   } = useForm<RegisterFormValues>({
     mode: "onBlur",
     reValidateMode: "onChange",
     defaultValues: {
       coffeePrice: DEFAULT_COFFEE_PRICE,
+      avatarUrl: "",
     },
   });
+
+  const watchAvatarUrl = watch("avatarUrl");
 
   const handleRegister: SubmitHandler<RegisterFormValues> = async (values) => {
     setRequestError(null);
@@ -51,6 +56,7 @@ const RegisterPage = () => {
         email: values.email.trim(),
         password: values.password,
         bio: values.bio.trim(),
+        avatarUrl: values.avatarUrl?.trim() || undefined,
         coffeePrice: Number(values.coffeePrice),
       });
       navigate("/dashboard");
@@ -74,6 +80,9 @@ const RegisterPage = () => {
       }
       if (details.fieldErrors.bio) {
         setError("bio", { type: "server", message: details.fieldErrors.bio });
+      }
+      if (details.fieldErrors.avatarUrl) {
+        setError("avatarUrl", { type: "server", message: details.fieldErrors.avatarUrl });
       }
     }
   };
@@ -279,6 +288,68 @@ const RegisterPage = () => {
           ) : (
             <p id="register-coffee-price-help" className="mt-1.5 text-body-small text-muted">
               Choose between ₹{MIN_COFFEE_PRICE} and ₹{MAX_COFFEE_PRICE}.
+            </p>
+          )}
+        </div>
+
+        {/* Avatar URL (Optional) */}
+        <div>
+          <div className="flex items-center justify-between mb-field-label">
+            <label htmlFor="register-avatar" className="block text-label text-surface-foreground">
+              Avatar URL <span className="font-normal text-muted">(optional)</span>
+            </label>
+            {watchAvatarUrl ? (
+              <span className="text-caption text-primary font-medium">Live preview</span>
+            ) : null}
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="shrink-0">
+              {watchAvatarUrl ? (
+                <img
+                  src={watchAvatarUrl}
+                  alt="Avatar preview"
+                  className="w-10 h-10 rounded-full object-cover border border-outline-variant/50 shadow-xs"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://ik.imagekit.io/hnoglyswo0/user-avatar.webp";
+                  }}
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant border border-outline-variant/40 shadow-xs">
+                  <span className="material-symbols-outlined text-[20px] text-muted">person</span>
+                </div>
+              )}
+            </div>
+            <div className="flex-1">
+              <Input
+                id="register-avatar"
+                type="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                placeholder="https://example.com/avatar.jpg"
+                aria-invalid={Boolean(errors.avatarUrl)}
+                aria-describedby={errors.avatarUrl ? "register-avatar-error" : "register-avatar-help"}
+                {...registerField("avatarUrl", {
+                  validate: (val) => {
+                    if (!val || !val.trim()) return true;
+                    try {
+                      const url = new URL(val.trim());
+                      return url.protocol === "http:" || url.protocol === "https:" || "Must be a valid HTTP or HTTPS URL.";
+                    } catch {
+                      return "Enter a valid URL (e.g. https://...).";
+                    }
+                  },
+                  onChange: () => setRequestError(null),
+                })}
+              />
+            </div>
+          </div>
+          {errors.avatarUrl ? (
+            <p id="register-avatar-error" className="mt-1.5 text-body-small text-danger" role="alert">
+              {errors.avatarUrl.message}
+            </p>
+          ) : (
+            <p id="register-avatar-help" className="mt-1 text-caption text-muted">
+              Direct link to your photo (JPG, PNG, WebP). Leave blank to use our default avatar.
             </p>
           )}
         </div>

@@ -2,20 +2,23 @@ import { Types } from "mongoose";
 import { PaymentModel } from "../models/payment.model.js";
 
 interface CreatePaymentData {
-    sender?: Types.ObjectId;
+    sender?: Types.ObjectId | undefined;
     creator: Types.ObjectId;
-    supporterName?: string;
-    supporterEmail?: string;
-    coffeeQuantity?: number;
+    supporterName?: string | undefined;
+    supporterEmail?: string | undefined;
+    coffeeQuantity?: number | undefined;
     amount: number;
     currency: string;
     razorpayOrderId: string;
+    message?: string | undefined;
+    isPrivate?: boolean | undefined;
 }
 
 interface CreatorPaymentDashboardResult {
     summary: {
         totalAmount: number;
         successfulPayments: number;
+        totalCups?: number;
     }[];
     supporters: {
         totalSupporters: number;
@@ -24,6 +27,9 @@ interface CreatorPaymentDashboardResult {
         supporterName: string;
         amount: number;
         currency: string;
+        coffeeQuantity?: number;
+        message?: string;
+        isPrivate?: boolean;
         date: Date;
         status: "paid";
     }[];
@@ -43,7 +49,6 @@ export const findPaymentByRazorpayOrderId = async (
     });
 };
 
-
 export const updatePaymentByRazorpayOrderId = async (
     razorpayOrderId: string,
     data: {
@@ -52,9 +57,10 @@ export const updatePaymentByRazorpayOrderId = async (
     }
 ) => {
     return await PaymentModel.findOneAndUpdate(
-        { razorpayOrderId,
-            status:{$ne:"paid"},
-         },
+        { 
+            razorpayOrderId,
+            status: { $ne: "paid" },
+        },
         { $set: data },
         { new: true }
     );
@@ -100,6 +106,7 @@ export const getCreatorPaymentDashboard = async (creatorId: string) => {
                             _id: null,
                             totalAmount: { $sum: "$amount" },
                             successfulPayments: { $sum: 1 },
+                            totalCups: { $sum: { $ifNull: ["$coffeeQuantity", 1] } },
                         },
                     },
                     {
@@ -107,6 +114,7 @@ export const getCreatorPaymentDashboard = async (creatorId: string) => {
                             _id: 0,
                             totalAmount: 1,
                             successfulPayments: 1,
+                            totalCups: 1,
                         },
                     },
                 ],
@@ -130,7 +138,7 @@ export const getCreatorPaymentDashboard = async (creatorId: string) => {
                 ],
                 recentPayments: [
                     { $sort: { createdAt: -1 } },
-                    { $limit: 10 },
+                    { $limit: 20 },
                     {
                         $project: {
                             _id: 0,
@@ -139,6 +147,15 @@ export const getCreatorPaymentDashboard = async (creatorId: string) => {
                             },
                             amount: 1,
                             currency: 1,
+                            coffeeQuantity: { $ifNull: ["$coffeeQuantity", 1] },
+                            message: {
+                                $cond: {
+                                    if: { $eq: ["$isPrivate", true] },
+                                    then: "",
+                                    else: { $ifNull: ["$message", ""] },
+                                },
+                            },
+                            isPrivate: { $ifNull: ["$isPrivate", false] },
                             date: "$createdAt",
                             status: 1,
                         },
@@ -153,6 +170,7 @@ export const getCreatorPaymentDashboard = async (creatorId: string) => {
         totalSupporters: dashboard?.supporters[0]?.totalSupporters ?? 0,
         successfulPayments: dashboard?.summary[0]?.successfulPayments ?? 0,
         totalSuccessfulPayments: dashboard?.summary[0]?.successfulPayments ?? 0,
+        totalCups: dashboard?.summary[0]?.totalCups ?? dashboard?.summary[0]?.successfulPayments ?? 0,
         recentPayments: dashboard?.recentPayments ?? [],
     };
 };

@@ -7,7 +7,7 @@ export function findCreatorProfileById(userId: string) {
 
 export function findPublicCreatorByUsername(username: string) {
   return UserModel.findOne({ username: username.trim().toLowerCase() }).select(
-    "name username bio avatarUrl coffeePrice",
+    "name username bio avatarUrl coffeePrice socialLinks goal",
   );
 }
 

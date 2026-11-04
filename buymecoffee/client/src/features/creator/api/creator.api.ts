@@ -13,18 +13,21 @@ export const creatorApi = baseApi.injectEndpoints({
         url: "creator/dashboard",
         method: "GET",
       }),
+      providesTags: ["CreatorDashboard"],
     }),
     getCreatorProfile: builder.query<CreatorProfileResponse, void>({
       query: () => ({
         url: "creator/profile",
         method: "GET",
       }),
+      providesTags: ["CreatorProfile"],
     }),
     getPublicCreator: builder.query<PublicCreatorResponse, string>({
       query: (username) => ({
         url: `creators/${encodeURIComponent(username)}`,
         method: "GET",
       }),
+      providesTags: (_res, _err, username) => [{ type: "PublicCreator", id: username }],
     }),
     updateCreatorProfile: builder.mutation<
       CreatorProfileResponse,
@@ -35,6 +38,7 @@ export const creatorApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: profileUpdates,
       }),
+      invalidatesTags: ["CreatorProfile", "CreatorDashboard", "PublicCreator"],
     }),
   }),
 });

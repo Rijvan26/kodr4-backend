@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import mongoose, { Schema } from "mongoose";
-import {  Document } from "mongoose";
-
+import { Document } from "mongoose";
 
 import {
     DEFAULT_COFFEE_PRICE,
@@ -17,16 +16,27 @@ export interface IUserMethods {
 export interface Iuser extends Document, IUserMethods {
    username: string;
    name: string;
-   bio: string;
+   bio?: string | undefined;
    email: string;
    password: string;
-   avatarUrl: string;
+   avatarUrl?: string | undefined;
    coffeePrice: number;
+   socialLinks?: {
+     instagram?: string | undefined;
+     youtube?: string | undefined;
+     twitter?: string | undefined;
+     website?: string | undefined;
+   } | undefined;
+   goal?: {
+     title?: string | undefined;
+     targetAmount?: number | undefined;
+     showGoal?: boolean | undefined;
+   } | undefined;
+   thankYouMessage?: string | undefined;
+   allowPublicMessages?: boolean | undefined;
    createdAt: Date; 
    updatedAt: Date; 
 }
-
-
 
 const userSchema = new Schema<Iuser>(
     {
@@ -52,6 +62,7 @@ const userSchema = new Schema<Iuser>(
         bio: {
             type: String,
             maxlength: 160,
+            default: "",
         },
         avatarUrl: {
             type: String,
@@ -66,6 +77,19 @@ const userSchema = new Schema<Iuser>(
             get: (val: number) => getValidCoffeePrice(val),
             set: (val: number) => getValidCoffeePrice(val),
         },
+        socialLinks: {
+            instagram: { type: String, default: "" },
+            youtube: { type: String, default: "" },
+            twitter: { type: String, default: "" },
+            website: { type: String, default: "" },
+        },
+        goal: {
+            title: { type: String, default: "" },
+            targetAmount: { type: Number, default: 0 },
+            showGoal: { type: Boolean, default: false },
+        },
+        thankYouMessage: { type: String, default: "" },
+        allowPublicMessages: { type: Boolean, default: true },
         password: { type: String, required: true, minlength: 8, select: false }
     },
     { timestamps: true, toJSON: { getters: true }, toObject: { getters: true } },

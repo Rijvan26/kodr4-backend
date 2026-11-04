@@ -5,9 +5,11 @@ export interface User {
     name: string;
     username: string;
     email: string;
-    password?: string;
+    password?: string | undefined;
+    avatarUrl?: string | undefined;
+    bio?: string | undefined;
     coffeePrice: number;
-    refreshToken?: string | null;
+    refreshToken?: string | null | undefined;
     createdAt: Date;
     updatedAt: Date;
     comparePassword(candidate: string): Promise<boolean>;
@@ -18,7 +20,8 @@ export interface RegisterInput {
     username: string;
     email: string;
     password: string;
-    bio?: string;
+    bio?: string | undefined;
+    avatarUrl?: string | undefined;
     coffeePrice: number;
 }
 
@@ -32,6 +35,8 @@ export interface PublicUser {
     name: string;
     username: string;
     email: string;
+    avatarUrl?: string | undefined;
+    bio?: string | undefined;
     coffeePrice: number;
     createdAt: Date;
     updatedAt: Date;
