@@ -14,9 +14,10 @@ const app: Application = express();
 
 const allowedOrigins = [
     "https://setup-anymore-washhouse.ngrok-free.dev",
-    "https://support-me000.vercel.app/",
+    "http://localhost:5173",
+    "https://support-me000.vercel.app",
     ...configEnv.CORS_ORIGINS,
-];
+].map((origin) => origin.replace(/\/+$/, ""));
 
 app.use(cors({
     origin: allowedOrigins,
