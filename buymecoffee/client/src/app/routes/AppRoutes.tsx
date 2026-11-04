@@ -1,9 +1,7 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import AuthInitializer from "../../features/auth/components/AuthInitializer";
-import CreaterPage from "../../pages/CreaterPage";
 import CreatorProfilePage from "../../pages/CreatorProfilePage";
 import DashboardPage from "../../pages/DashboardPage";
-import HomePage from "../../pages/HomePage";
 import LoginPage from "../../pages/LoginPage";
 import PublicCreatorPage from "../../pages/PublicCreatorPage";
 import RegisterPage from "../../pages/RegisterPage";
@@ -21,6 +19,10 @@ const router = createBrowserRouter([
                 path: "",
                 element: <AuthLayout />,
                 children: [
+                    {
+                        index: true,
+                        element: <Navigate to="/login" replace />,
+                    },
                     {
                         path: "login",
                         element: <LoginPage />,
@@ -46,16 +48,16 @@ const router = createBrowserRouter([
                         element: <DashboardPage />,
                     },
                     {
-                        path: "home",
-                        element: <HomePage />,
+                        path: "creator",
+                        element: <CreatorProfilePage />,
                     },
                     {
                         path: "creater",
-                        element: <CreaterPage />,
+                        element: <Navigate to="/dashboard/creator" replace />,
                     },
                     {
-                        path: "creator",
-                        element: <CreatorProfilePage />,
+                        path: "home",
+                        element: <Navigate to="/dashboard" replace />,
                     },
                 ],
             },
@@ -64,6 +66,10 @@ const router = createBrowserRouter([
     {
         path: "/:username",
         element: <PublicCreatorPage />,
+    },
+    {
+        path: "*",
+        element: <Navigate to="/login" replace />,
     },
 ]);
 
@@ -74,4 +80,3 @@ const AppRouter = () => (
 );
 
 export default AppRouter;
-
