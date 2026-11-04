@@ -57,7 +57,9 @@ export const useRazorpay = () => {
     supporterName,
     supporterEmail,
   }: OpenCheckoutOptions): Promise<void> => {
-    const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID?.trim();
+    const keyId =
+      import.meta.env.VITE_RAZORPAY_KEY_ID?.trim() ||
+      "rzp_test_TgCcY8Wb4r58Yw";
     if (!keyId) {
       throw new Error("Razorpay Checkout is not configured.");
     }

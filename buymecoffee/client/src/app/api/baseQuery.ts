@@ -12,8 +12,12 @@ import {
   clearAccessToken,
 } from "../../features/auth/state/auth.slice";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL?.trim() ||
+  "https://kodr4-backend.onrender.com/api/v1";
+
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_URL,
+  baseUrl: API_BASE_URL,
   credentials: "include",
 
   prepareHeaders: (headers, { getState }) => {
