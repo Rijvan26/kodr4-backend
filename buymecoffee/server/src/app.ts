@@ -14,7 +14,7 @@ const app: Application = express();
 
 const allowedOrigins = [
     "https://setup-anymore-washhouse.ngrok-free.dev",
-    "http://localhost:5173",
+    "https://support-me000.vercel.app/",
     ...configEnv.CORS_ORIGINS,
 ];
 
